@@ -2,7 +2,7 @@ require('dotenv').config();
 const Sequelize = require("sequelize");
 const db = {}
 
-const sequelize = new Sequelize('amin_vvs','aminVvsDb', '%MgEBkq3j;}~', {
+const sequelize = new Sequelize('aminVvsDb','amin_vvs', '%MgEBkq3j;}~', {
     host: 'arystonwebsolution.com',
     dialect: 'mysql',
     operatorsAliases: false,
