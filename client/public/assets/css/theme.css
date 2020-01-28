@@ -1,0 +1,194 @@
+/********************************************************
+********************************************************/
+:root {
+    --first-Color: #e85280 !important;
+    --second-Color: #eb4b3f !important;
+    --third-Color: #f6722a !important;
+    --fourth-Color: #22cdbd !important;
+    --nav-icon-Color: #93153b !important;
+	--body-back-color: #e1e1e1 !important;
+}
+/********************************************************
+********************************************************/
+.bg-main,
+.bg-top-nav,
+#sidenavToggler{
+	background: var(--body-back-color);
+}
+/********************************************************
+********************************************************/
+body.login-page {
+	background: var(--body-back-color);
+}
+.navbar-dark .navbar-nav .nav-link,
+#mainNav.navbar-dark .navbar-collapse .navbar-nav > .nav-item.dropdown > .nav-link::after {
+	color: var(--nav-icon-Color);
+}
+#mainNav {
+	border-bottom: 2px solid var(--nav-icon-Color);
+}
+.navbar-dark .navbar-toggler {
+	color: var(--nav-icon-Color);
+	border-color: var(--nav-icon-Color);
+}
+.login-well {
+	border-color: var(--nav-icon-Color);
+}
+.navbar-dark .navbar-toggler-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 0, 0, 0.6)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E")
+}
+/********************************************************
+********************************************************/
+.body-top-menu-container ul {
+	border-bottom: var(--first-Color) 2px solid;
+}
+/********************************************************
+********************************************************/
+.content-wrapper {
+	background: none;
+}
+.breadcrumb {
+	background: rgba(0,0,0,0.6);
+}
+.breadcrumb .breadcrumb-item {
+	color: rgba(255,255,255,1);
+}
+.breadcrumb .breadcrumb-item a {
+	color: rgba(255,255,255,0.8);
+}
+#mainNav.navbar-dark .navbar-collapse .navbar-sidenav li.active a {
+    background-color: rgba(0,0,0,0.3);
+	position: relative;
+}
+#mainNav.navbar-dark .navbar-collapse .navbar-sidenav li a:hover {
+    background-color: rgba(0,0,0,0.2);
+}
+#mainNav.navbar-dark .navbar-collapse .navbar-sidenav li.active a:after {
+	content: "";
+	font-family: 'FontAwesome';
+    position: absolute;
+    right: 0;
+	top: 27%;
+    width: 0;
+    height: 0; 
+	border-top: 7px solid transparent;
+	border-bottom: 7px solid transparent;   
+	border-right:10px solid var(--body-back-color); 
+	clear: both;
+}
+/********************************************************
+********************************************************/
+.bg-color-first {
+	background: var(--first-Color);
+}
+.bg-color-second {
+	background: var(--second-Color);
+}
+.bg-color-third {
+	background: var(--third-Color);
+}
+.bg-color-fourth {
+	background: var(--fourth-Color);
+}
+/********************************************************
+********************************************************/
+.text-color-first {
+	color: var(--first-Color);
+}
+.text-color-second {
+	color: var(--second-Color);
+}
+.text-color-third {
+	color: var(--third-Color);
+}
+.text-color-fourth {
+	color: var(--fourth-Color);
+}
+/********************************************************
+********************************************************/
+.svg-first-color path,
+.svg-first-color circle,
+.svg-first-color rect,
+.highcharts-series-group .highcharts-column-series:nth-child(1) .highcharts-point {
+	fill: var(--first-Color)
+}
+.svg-second-color path,
+.svg-second-color circle,
+.svg-second-color rect,
+.highcharts-series-group .highcharts-column-series:nth-child(3) .highcharts-point {
+	fill: var(--second-Color)
+}
+.svg-third-color path,
+.svg-third-color circle,
+.svg-third-color rect,
+.highcharts-series-group .highcharts-column-series:nth-child(5) .highcharts-point {
+	fill: var(--third-Color)
+}
+.svg-fourth-color path,
+.svg-fourth-color circle,
+.svg-fourth-color rect,
+.highcharts-series-group .highcharts-column-series:nth-child(7) .highcharts-point {
+	fill: var(--fourth-Color)
+}
+/********************************************************
+********************************************************/
+.highcharts-legend .highcharts-legend-item:nth-child(1) .highcharts-point {
+	fill: var(--first-Color)
+}
+.highcharts-legend .highcharts-legend-item:nth-child(2) .highcharts-point {
+	fill: var(--second-Color)
+}
+.highcharts-legend .highcharts-legend-item:nth-child(3) .highcharts-point {
+	fill: var(--third-Color)
+}
+.highcharts-legend .highcharts-legend-item:nth-child(4) .highcharts-point {
+	fill: var(--fourth-Color)
+}
+/********************************************************
+********************************************************/
+
+/********************************************************
+********************************************************/
+.col-full {
+	display: inline-block;
+	width: 100%;
+	border-bottom: 1px solid #e9ecef;
+}
+.col-half {
+	display: inline-block;
+	width: 49%;
+	padding: 5px;
+}
+th .col-full,
+td .col-full:last-child {
+	border: 0;
+}
+th .col-full .col-half,
+td .col-full .col-half {
+	border-right: 1px solid #e9ecef;
+}
+th .col-full .col-half:last-child,
+td .col-full .col-half:last-child {
+	border: 0;
+}
+.col-full .col-half .label {
+	cursor: pointer;
+	margin: 3px;
+}
+tfoot th {
+	text-align: center;
+}
+/********************************************************
+********************************************************/
+
+/********************************************************
+********************************************************/
+
+/********************************************************
+********************************************************/
+
+/********************************************************
+********************************************************/
+
+/********************************************************
+********************************************************/
