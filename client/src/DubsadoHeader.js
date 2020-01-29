@@ -29,15 +29,15 @@ export default class Dashboard extends Component {
                             <Icon name="sidebar" style={{ margin: 'auto' }} />
                         </Menu.Item> */}
                         <Menu.Item header >
-                            <img src="/assets/logo1.png" className alt="" style={{ width: "184px", height: "65px" }} />
+                            {/* <img src="/assets/logo1.png" className alt="" style={{ width: "184px", height: "65px" }} /> */}
                         </Menu.Item>
                         <Menu.Item header >
 
                         </Menu.Item>
-                        <Menu.Item header >
+                        {/* <Menu.Item header >
                             <Input action={{ icon: 'search', color: "grey" }} inverted placeholder='Search...' />
-                        </Menu.Item>
-                        <Menu.Item header >
+                        </Menu.Item> */}
+                        {/* <Menu.Item header >
 
                             <Popup
                                 content={<div style={{ width: "300px", padding: "10px", background: "pink" }}>
@@ -53,17 +53,17 @@ export default class Dashboard extends Component {
                                 trigger={<Icon name="bell" className="menuitem" />}
 
                             />
-                        </Menu.Item>
-                        <Menu.Item header >
+                        </Menu.Item> */}
+                        {/* <Menu.Item header >
                             <Icon name="envelope" className="menuitem" />
-                        </Menu.Item>
+                        </Menu.Item> */}
 
                         <Menu.Menu position="right">
 
-                            <Menu.Item header >
+                            {/* <Menu.Item header >
                                 <Link to="/settings" style={{ color: "black" }}><Icon name="cog" style={{ color: "#932626" }} /></Link>
 
-                            </Menu.Item>
+                            </Menu.Item> */}
                             <Menu.Item>
                                 <Dropdown style={{ color: "#932626" }} trigger={trigger(this.state.userName)} options={
                                     [

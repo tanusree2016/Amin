@@ -50,109 +50,109 @@ function getItems() {
                         id: 2,
                         name:  <Link to="/projects" style={{color:"white"}}>  <i class="fa fa-code-fork" style={{ fontSize: "17px", paddingRight: "5px" }}></i>Projects</Link>
                     },
-                    {
-                        id: 3,
-                         name: "Reporting"
-                         ,
-                         //<text>
-                        // <i class="fa fa-file-excel-o"></i> Reporting
-                        // </text>,
-                        subitems: [
-                            {
-                                id: 1,
-                                name: <Link to="/projectssources" style={{color:"white"}}> Project Sources</Link>
-                            },
-                            {
-                                id: 2,
-                                name: <Link to="/projectbreakdown" style={{color:"white"}}> Project Breakdown</Link>
-                            }, 
-                            {
-                                id: 3,
-                                name: <Link to="/invoices" style={{color:"white"}}>Invoices</Link>
-                            }, 
-                            {
-                                id: 4,
-                                name: <Link to="/transaction" style={{color:"white"}}>Transactions</Link>
-                            }, 
-                            {
-                                id: 5,
-                                name: <Link to="/chartofaccounts" style={{color:"white"}}>Chart of Accounts</Link>
-                            }, 
-                            {
-                                id: 6,
-                                name: <Link to="/reports" style={{color:"white"}}>Reports</Link>
-                            }
-                        ]
-                    },
-                    {
-                        id: 4,
-                        name: <Link to="/bigcalendar" style={{color:"white"}}><i class="fa fa-calendar" style={{ paddingRight: "5px" }}></i>Calendar</Link>
-                    },
-                    {
-                        id: 6,
-                        name: <Link to="/tasks" style={{color:"white"}}><i class="fa fa-tasks" style={{ paddingRight: "5px" }}></i>Tasks</Link>
-                    },
-                    {
-                        id: 7,
+                    // {
+                    //     id: 3,
+                    //      name: "Reporting"
+                    //      ,
+                    //      //<text>
+                    //     // <i class="fa fa-file-excel-o"></i> Reporting
+                    //     // </text>,
+                    //     subitems: [
+                    //         {
+                    //             id: 1,
+                    //             name: <Link to="/projectssources" style={{color:"white"}}> Project Sources</Link>
+                    //         },
+                    //         {
+                    //             id: 2,
+                    //             name: <Link to="/projectbreakdown" style={{color:"white"}}> Project Breakdown</Link>
+                    //         }, 
+                    //         {
+                    //             id: 3,
+                    //             name: <Link to="/invoices" style={{color:"white"}}>Invoices</Link>
+                    //         }, 
+                    //         {
+                    //             id: 4,
+                    //             name: <Link to="/transaction" style={{color:"white"}}>Transactions</Link>
+                    //         }, 
+                    //         {
+                    //             id: 5,
+                    //             name: <Link to="/chartofaccounts" style={{color:"white"}}>Chart of Accounts</Link>
+                    //         }, 
+                    //         {
+                    //             id: 6,
+                    //             name: <Link to="/reports" style={{color:"white"}}>Reports</Link>
+                    //         }
+                    //     ]
+                    // },
+                    // {
+                    //     id: 4,
+                    //     name: <Link to="/bigcalendar" style={{color:"white"}}><i class="fa fa-calendar" style={{ paddingRight: "5px" }}></i>Calendar</Link>
+                    // },
+                    // {
+                    //     id: 6,
+                    //     name: <Link to="/tasks" style={{color:"white"}}><i class="fa fa-tasks" style={{ paddingRight: "5px" }}></i>Tasks</Link>
+                    // },
+                    // {
+                    //     id: 7,
                      
-                        name: "Utilities",
+                    //     name: "Utilities",
           
          
-                        // <text>
-                        // <i class="fa fa-briefcase"></i> Utilities
-                        // </text>,
-                        subitems: [
-                            {
-                                id: 1,
-                                name: <Link to="/formlists" style={{color:"white"}}>Form List</Link>
-                            },
-                            {
-                                id: 2,
-                                name:  <Link to="/addressbook" style={{color:"white"}}> Address Book</Link>
-                            },
-                            {
-                                id: 3,
-                                name:  <Link to="/timetracker" style={{color:"white"}}>Time Tracker</Link>
-                            }
-                        ]
-                    },
-                    {
-                        id: 8,
-                        name: "Templates",
-                        //  <text>
-                        // <i class="fa fa-building-o"></i> Templates
-                        // </text>,
-                        subitems: [
-                            {
-                                id: 1,
-                                name: <Link to="/scheduler" style={{color:"white"}}> Scheduler</Link>
-                            },
-                            {
-                                id: 2,
-                                name: <Link to="/forms" style={{color:"white"}}>Forms</Link>
-                            },  {
-                                id: 3,
-                                name:  <Link to="/cannedemails" style={{color:"white"}}>Canned Emails</Link>
-                            },
-                            {
-                                id: 4,
-                                name: <Link to="/packages" style={{color:"white"}}>Packages</Link>
-                            },
-                            {
-                                id: 5,
-                                name:  <Link to="/workflow" style={{color:"white"}}>Workflow</Link>
-                            },
-                            {
-                                id: 5,
-                                name:  <Link to="/paymentschedule" style={{color:"white"}}>Payment Schedule</Link>
-                            }
-                        ]
-                    },
-                    {
-                      id: 9,
-                      name :<div style={{height:"315px"}}></div>
+                    //     // <text>
+                    //     // <i class="fa fa-briefcase"></i> Utilities
+                    //     // </text>,
+                    //     subitems: [
+                    //         {
+                    //             id: 1,
+                    //             name: <Link to="/formlists" style={{color:"white"}}>Form List</Link>
+                    //         },
+                    //         {
+                    //             id: 2,
+                    //             name:  <Link to="/addressbook" style={{color:"white"}}> Address Book</Link>
+                    //         },
+                    //         {
+                    //             id: 3,
+                    //             name:  <Link to="/timetracker" style={{color:"white"}}>Time Tracker</Link>
+                    //         }
+                    //     ]
+                    // },
+                    // {
+                    //     id: 8,
+                    //     name: "Templates",
+                    //     //  <text>
+                    //     // <i class="fa fa-building-o"></i> Templates
+                    //     // </text>,
+                    //     subitems: [
+                    //         {
+                    //             id: 1,
+                    //             name: <Link to="/scheduler" style={{color:"white"}}> Scheduler</Link>
+                    //         },
+                    //         {
+                    //             id: 2,
+                    //             name: <Link to="/forms" style={{color:"white"}}>Forms</Link>
+                    //         },  {
+                    //             id: 3,
+                    //             name:  <Link to="/cannedemails" style={{color:"white"}}>Canned Emails</Link>
+                    //         },
+                    //         {
+                    //             id: 4,
+                    //             name: <Link to="/packages" style={{color:"white"}}>Packages</Link>
+                    //         },
+                    //         {
+                    //             id: 5,
+                    //             name:  <Link to="/workflow" style={{color:"white"}}>Workflow</Link>
+                    //         },
+                    //         {
+                    //             id: 5,
+                    //             name:  <Link to="/paymentschedule" style={{color:"white"}}>Payment Schedule</Link>
+                    //         }
+                    //     ]
+                    // },
+                    // {
+                    //   id: 9,
+                    //   name :<div style={{height:"315px"}}></div>
 
-                    },
+                    // },
                     
                 ]
             },
