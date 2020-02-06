@@ -4,8 +4,9 @@ const cors = require('cors');
 const app = express();
 const path = require("path");
 
-
+const service = require('./routes/Service')
 const consumer = require('./routes/Consumer');
+const admin = require('./routes/Admin')
 
 // ... other app.use middleware 
 //app.use(express.static(path.join(__dirname, "client", "build")))
@@ -14,7 +15,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/consumer',consumer)
+app.use('/service',service);
+app.use('/consumer',consumer);
+app.use('/admin',admin);
 app.get('/', function(req, res) {
     res.send('hello');
 });
@@ -27,9 +30,9 @@ const PORT = process.env.PORT || 5000;
 
 //const PORT = 5000;
 
-app.listen(PORT, () => {
-    console.log('dd'+process.env.DATABASE_URL);
-    console.log(`Server is running on PORT ${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log('dd'+process.env.DATABASE_URL);
+//     console.log(`Server is running on PORT ${PORT}`);
+// });
 
-//app.listen(5000, "192.168.1.132");
+app.listen(5000, "192.168.1.132");

@@ -2,8 +2,8 @@ require('dotenv').config();
 const Sequelize = require("sequelize");
 const db = {}
 
-const sequelize = new Sequelize('amin_vvs','aminVvsDb', '%MgEBkq3j;}~', {
-    host: 'ec2-35-175-170-131.compute-1.amazonaws.com',
+const sequelize = new Sequelize('db_amin_vvs','root', '', {
+    host: 'localhost',
     dialect: 'mysql',
     operatorsAliases: false,
     freezeTableName: true, 

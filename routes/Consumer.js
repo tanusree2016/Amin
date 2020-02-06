@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Consumer = require('../model/Consumer');
 const Service = require('../model/Categories');
+const SubCategories = require('../model/Subcategory');
 const Provider = require('../model/Provider');
 const Skills = require('../model/Skill');
 const Feedback = require('../model/Feedback'); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const jwt_config = require('../jwt.config');
+
 
 router.post('/register', function (req, res) {
     if (!req.body.email) {
@@ -64,6 +66,11 @@ router.post('/register', function (req, res) {
 
 
 router.post('/login', function (req, res) {
+
+   // console.log('--'+req.body);
+
+    console.log('--'+JSON.stringify(req.body));
+    //res.status({data:req.body});
     if (!req.body.email) {
         return res.status(400).send({
             value: 0,
@@ -71,8 +78,8 @@ router.post('/login', function (req, res) {
         });
     }
     else {
-        Consumer.findOne({ email: req.body.email }).then(function (consumers) {
-            
+        Consumer.findOne({where: { email: req.body.email }}).then(function (consumers) {
+            console.log('cons'+JSON.stringify(consumers));
             if (!consumers) {
                 return res.status(400).send({
                     value: 0,
@@ -131,7 +138,9 @@ router.get('/services', function(req,res) {
             });
         }
     });
-})
+});
+
+
 
 router.post('/service-provider-by-id', function(req,res){
     Provider.hasMany(Skills, { sourceKey: 'id', foreignKey: 'service_provider_id' });

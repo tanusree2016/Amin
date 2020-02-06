@@ -1,0 +1,127 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import MenuList from './MenuList';
+import {addMenu} from '../authentication';
+class MenuAdd extends Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            menuName: '',
+            subMenu: '',
+            showChild : true,
+        }
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    reloadChild = () => {
+      this.setState({
+        showChild : false
+      })
+    
+      setTimeout(() => {
+        this.setState({
+          showChild : true
+        })
+      },100);
+  
+      console.log("Reload Child Invoked")
+  }
+
+  handleInputChangeValue(event) {
+    let nam = event ? event.target.name : event;
+    let val = event ? event.target.value : event;
+    console.log(nam, ":", val);
+    this.setState({ [nam]: val });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+   const addMenu = {
+    menuName: this.state.menuName,
+    subMenu: this.state.subMenu,
+      //duedate: this.state.duedate,
+    }
+    this.forceUpdate();
+    this.props.addMenu(addMenu, this.props.history);
+    this.resetField();
+    this.reloadChild();
+  }
+
+  resetField = () => {
+    this.setState({ menuName: '' });
+    this.setState({ subMenu: '' });
+   
+  }
+
+    render() {
+
+        const styles1 = {
+            textAlign: 'center',
+            paddingTop: '2',
+          };
+      
+          const textfieldHeight = {
+            width: 300,
+            height: 50,
+            marginLeft: 2,
+            marginRight: 2,
+            marginTop: 2,
+          };
+        return(
+            <div style={styles1}>
+        
+            <Typography variant="h5" gutterBottom paragraph>
+              Add Menu
+            </Typography>
+            <form className="reg" noValidate>
+              <div>
+                <TextField style={textfieldHeight}
+                  variant="outlined"
+                  margin="dense"
+                  required
+    
+                  id="menuName"
+                  label="Menu Name"
+                  name="menuName"
+                  value={this.state.menuName}
+                  onChange={(ev) => this.handleInputChangeValue(ev)}
+                  autoFocus
+                />
+              </div>
+              
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                //className={classes.submit}
+                onClick={this.handleSubmit} >
+                Submit
+              </Button>
+            </form>
+            {this.state.showChild?
+          <MenuList reloadChild={this.reloadChild}/> : null
+        }
+          </div>
+        )
+
+    }
+
+}
+
+MenuAdd.propTypes = {
+  classes: PropTypes.object.isRequired,
+  addMenu: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(mapStateToProps, { addMenu })(MenuAdd)

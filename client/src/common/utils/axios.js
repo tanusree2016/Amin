@@ -1,7 +1,8 @@
 import Axios from "axios";
 
 var axios = Axios.create({
-  baseURL: "http://localhost:5000/"
+ // baseURL: "http://localhost:5000/"
+ baseURL: "http://192.168.1.132:5000/"
   /* other custom settings */
 });
 
