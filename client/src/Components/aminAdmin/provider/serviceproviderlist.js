@@ -34,7 +34,7 @@ mobiscroll.settings = {
 
   var providerArray = [];
 
-  class ProviderList extends Component {
+  class ServiceProviderList extends Component {
 
     constructor(props) {
         super(props);
@@ -124,7 +124,7 @@ mobiscroll.settings = {
 
     fetchProviders () {
         console.log("Calling --- ");
-        fetch(envirionment.BASE_URL + 'service/provider-list', {
+        fetch(envirionment.BASE_URL + 'service/accepted-provider-list', {
             method: "GET",
             headers: { 'x-access-token': localStorage.getItem('token') }
         }).then(res => res.json())
@@ -306,7 +306,7 @@ mobiscroll.settings = {
                             <TableCell style={ tableHeadStyle }>Provider Email</TableCell>
                             <TableCell style={ tableHeadStyle }>Phone</TableCell>
                             <TableCell style={ tableHeadStyle }>Status</TableCell>
-                            <TableCell style={ tableHeadStyle }>Accept</TableCell>
+                            {/* <TableCell style={ tableHeadStyle }>Accept</TableCell> */}
                             <TableCell style={ tableHeadStyle }>View</TableCell>
                             
 
@@ -322,7 +322,7 @@ mobiscroll.settings = {
                                 <TableCell style={ tableBodyStyle }>{unit.phone}</TableCell>
                                 <TableCell style={ tableBodyStyle }>{unit.is_verified}</TableCell>
                                 
-                                <TableCell style={tableBodyStyle} onClick={(e) => this.handleClickAccept(unit.id, i)}><a href="#">Accept</a></TableCell>
+                                {/* <TableCell style={tableBodyStyle} onClick={(e) => this.handleClickAccept(unit.id, i)}><a href="#">Accept</a></TableCell> */}
                                 <TableCell><VisibilityIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClickView(unit.id,unit.name,unit.email,unit.phone,unit.dob,unit.city,unit.state,unit.postalcode,unit.address,unit.experience,unit.salary_hr, i)}></VisibilityIcon></TableCell>
                                 
                             </TableRow>
@@ -334,7 +334,7 @@ mobiscroll.settings = {
     }
   }
 
-  ProviderList.propTypes = {
+  ServiceProviderList.propTypes = {
     auth: PropTypes.object.isRequired,
    // editDesignation: PropTypes.func.isRequired,
     // designationDelete: PropTypes.func.isRequired
@@ -346,4 +346,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps)(ProviderList)
+export default connect(mapStateToProps)(ServiceProviderList)

@@ -73,6 +73,7 @@ import DefaultPage from '../../Components/admin/DefaultPage';
 import AddCategory from '../../Components/aminAdmin/category/addCategories';
 import SubCategory from '../../Components/aminAdmin/subcategory/addSubcategory';
 import Providers from '../../Components/aminAdmin/provider/providerlist';
+import ServiceProvider from '../../Components/aminAdmin/provider/serviceproviderlist'
 
 
 const drawerWidth = 240;
@@ -216,6 +217,8 @@ export default function AdminLayout() {
      setComponent("subCategory")
     if(index==3)
     setComponent("providers")
+    if(index==4)
+    setComponent("serviceproviders")
     // if (index == 1)
     //   setOpen(!open);
     // if (index == 1.1)
@@ -426,7 +429,13 @@ export default function AdminLayout() {
               <List>
                 <ListItem button selected={selectedIndex === 3} onClick={event => handleListItemClick(event, 3)}>
                   <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Providers" style={{ color: '#FFFFFF' }} />
+                  <ListItemText primary="Pending Providers" style={{ color: '#FFFFFF' }} />
+                </ListItem>
+              </List>
+              <List>
+                <ListItem button selected={selectedIndex === 4} onClick={event => handleListItemClick(event, 4)}>
+                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+                  <ListItemText primary="Service Providers" style={{ color: '#FFFFFF' }} />
                 </ListItem>
               </List>
       
@@ -631,6 +640,12 @@ export default function AdminLayout() {
         {
           component === 'providers' ?
           <Providers />
+          :
+          ''
+        }
+        {
+          component === 'serviceproviders' ?
+          <ServiceProvider />
           :
           ''
         }

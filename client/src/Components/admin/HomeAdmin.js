@@ -12,7 +12,7 @@ class HomeAdmin extends Component {
     }
     render() {
         return(
-        <div> <b>Welcome to Eclipsia! You are in Dashboard, which will build gradually</b> </div>
+        <div> <b>Welcome!!</b> </div>
         )
     }
 
