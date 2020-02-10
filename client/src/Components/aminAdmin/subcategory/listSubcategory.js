@@ -100,6 +100,8 @@ mobiscroll.settings = {
                 for (let i = 0; i < res.Service.length; i++) {
                     categoryArray.push(res.Service[i].name);
                     this.setState({ category: res.Service[i].subcategory })
+                    this.setState({ subcategory: res.Service[i].subcategory })
+                    this.setState({ subcategoryid: res.Service[i].id })
                     // this.setState({ color_code: res.Service[i].color_code })                    
                 }
                 console.log('array' + categoryArray);
@@ -114,28 +116,23 @@ mobiscroll.settings = {
 
     handleSubmit(e) {
         e.preventDefault();
-        if(this.state.name == ''){
+        if(this.state.subcategory == ''){
             showAlert('Please fill name')
           }
           else{
         const unitEdit = {
 
-            name: this.state.name,
-            shortname: this.state.shortname,
-            unitid: this.state.unitid
+            subcategory: this.state.subcategory,
+            subcategoryid: this.state.subcategoryid
         }
 
-        this.state.getAllcategories[this.state.editIndex].name= this.state.name
-        this.state.getAllcategories[this.state.editIndex].shortname= this.state.shortname
-        this.state.getAllcategories[this.state.editIndex].id= this.state.unitid
+        this.state.getAllcategories[this.state.editIndex].subcategory= this.state.subcategory
+        this.state.getAllcategories[this.state.editIndex].subcategoryid= this.state.subcategoryid
 
-        ///this.props.planEdit(planEdit, this.props.history);
-        //this.resetField();
-
-        base_url.post('unit-update', unitEdit, {
+        base_url.post('admin/edit-subcategory', unitEdit, {
             headers: {
-                'x-access-token': localStorage.getItem('token'),
-                'x-access-db': localStorage.getItem('dbname')
+               // 'x-access-token': localStorage.getItem('token'),
+                //'x-access-db': localStorage.getItem('dbname')
             }
         })
             .then(res => {
@@ -144,7 +141,7 @@ mobiscroll.settings = {
                 console.log(res.data.message);
                 if (res.data.value == 1) {
                     //swal("Plan is added successfully");
-                    let success = "Unit is updates successfully"
+                    let success = "Subcategories is updates successfully"
                     showAlert(success);
                 }
                 else
@@ -167,19 +164,23 @@ handleDelete(e){
         getAllcategories: prevState.getAllcategories.filter((_, i) => i !== this.state.delIndex)
     }));
 
-    fetch(envirionment.BASE_URL + 'unit-delete', {
+    const changeStatus = {
+        subcategoryid: this.state.subcategoryid,
+        
+    }
+
+    base_url.post('admin/delete-subcategory' ,changeStatus, {
         method: 'post',
         headers: {
-            'x-access-db': localStorage.getItem('dbname'),
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ unitid: this.state.unitid })
+       
     }).then(res => res.json())
         .then(res => {
             console.log("DATA --- " + res + " --- " + res.value);
             console.log(res.message);
             if (res.value == 1)
-                showAlert("Unit is deleted successfully");
+                showAlert("Subcategory is deleted successfully");
             else
                 showAlert(res.message);
         })
@@ -228,29 +229,20 @@ handleDelete(e){
                     <DialogTitle id="form-dialog-title">Edit</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Edit Plan
+                            Edit Subcategory
                         </DialogContentText>
                         <form>
                             <TextField
                                 autoFocus
                                 margin="dense"
                                 id="category"
-                                label="Category"
-                                name="category"
-                                value={this.state.name}
+                                label="Subcategory"
+                                name="subcategory"
+                                value={this.state.subcategory}
                                 fullWidth
                                 onChange={(ev) => this.handleInputChangeValue(ev)}
                             />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="color_code"
-                                value={this.state.shortname}
-                                label="Color Code"
-                                name="color_code"
-                                fullWidth
-                                onChange={(ev) => this.handleInputChangeValue(ev)}
-                            />
+                           
                         </form>
                     </DialogContent>
                     <DialogActions>
@@ -278,8 +270,8 @@ handleDelete(e){
 
                             <TableRow>
                                 <TableCell style={ tableBodyStyle }>{unit.subcategory}</TableCell>
-                                <TableCell><EditIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClick(unit.name, unit.shortname, unit._id,i)} /></TableCell>
-                                <TableCell><DeleteIcon fontSize="small" style={delPointer} onClick={(e) => this.handleClickDelete(unit._id,i)}/></TableCell>
+                                <TableCell><EditIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClick(unit.subcategory, unit.id,i)} /></TableCell>
+                                <TableCell><DeleteIcon fontSize="small" style={delPointer} onClick={(e) => this.handleClickDelete(unit.id,i)}/></TableCell>
                             </TableRow>
 
                         )}

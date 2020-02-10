@@ -70,17 +70,16 @@ router.post('/add-category', function (req, res) {
     console.log(JSON.stringify(req.body));
 
     let filename = '';
-    if (req.body.category_image.file) {
-      var base64Data = req.body.category_image.file;
-      filename = 'prof_' + req.body.category + '.' + req.body.extension;
-      fs.writeFile("./uploads/categories/" + filename, base64Data, 'base64', function (err) {
-        if (err) console.log(err);
-
-      });
-
+    if (!req.body.category_image) {
+        filename = '';
     }
     else {
-      filename = '';
+        var base64Data = req.body.category_image.file;
+        filename = 'prof_' + req.body.category + '.' + req.body.extension;
+        fs.writeFile("./uploads/categories/" + filename, base64Data, 'base64', function (err) {
+          if (err) console.log(err);
+  
+        });    
     }
 
     const category = new Service({
@@ -104,6 +103,48 @@ router.post('/add-category', function (req, res) {
         }
     })
 });
+
+
+router.post('/delete-category', function(req,res){
+    console.log(req.body);
+    Service.findByPk(req.body.categoryid).then((appoint) => {
+        appoint.destroy().then(function(appoint){
+            res.json({value:1, message: 'Category Deleted Successfully' })
+        })
+        
+    });
+});
+
+
+router.post('/edit-category', function(req,res){
+
+    console.log(req.body);
+    const values = {
+        category: req.body.category,
+        color_code: req.body.color_code,
+      }
+      const selector = {
+        where: { id: req.body.categoryid },
+      };
+    
+      Service.update(values, selector).then(service => {
+
+        if (!service) {
+            return res.status(400).send({
+                value: 0,
+                message: 'Something wrong'
+              });
+          }
+          else{
+            
+            return res.status(200).send({
+                value: 1,
+                message: 'success'
+              });
+          }
+
+      });
+})
 
 router.post('/add-subcategory', function (req, res) {
     console.log(JSON.stringify(req.body));
@@ -148,6 +189,70 @@ router.get('/list-subcategory', function (req, res) {
         }
     })
 });
+
+router.post('/delete-subcategory', function(req,res){
+    console.log(req.body);
+    SubCategories.findByPk(req.body.subcategoryid).then((appoint) => {
+        appoint.destroy().then(function(appoint){
+            res.json({value:1, message: ' Sub Category Deleted Successfully' })
+        })
+        
+    });
+});
+
+router.post('/edit-subcategory', function(req,res){
+
+    console.log(req.body);
+    const values = {
+        category_id: req.body.category_id,
+        subcategory: req.body.subcategory,
+      }
+      const selector = {
+        where: { id: req.body.subcategoryid },
+      };
+    
+      SubCategories.update(values, selector).then(service => {
+
+        if (!service) {
+            return res.status(400).send({
+                value: 0,
+                message: 'Something wrong'
+              });
+          }
+          else{
+            
+            return res.status(200).send({
+                value: 1,
+                message: 'success'
+              });
+          }
+
+      });
+});
+
+router.post('/add-finalsubcategory', function(req,res){
+
+    console.log(req.body);
+    // const subcategory = new SubCategories({
+    //     category_id: req.body.category_id,
+    //     subcategory: req.body.subcategory,
+    // });
+    // subcategory.save().then(subcategories=>{
+    //     if(!subcategories){
+    //         return res.status(400).send({
+    //             value: 0,
+    //             message: 'Not saved error'
+    //         });
+    //     }
+    //     else{
+    //         return res.status(200).send({
+    //             value: 1,
+    //             message: 'Succefully added subcategory',
+    //             data: subcategories
+    //         });
+    //     }
+    // })
+})
 
 
 

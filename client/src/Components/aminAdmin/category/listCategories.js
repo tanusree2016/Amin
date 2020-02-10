@@ -116,28 +116,27 @@ mobiscroll.settings = {
 
     handleSubmit(e) {
         e.preventDefault();
-        if(this.state.name == ''){
+        if(this.state.category == ''){
             showAlert('Please fill name')
           }
           else{
-        const unitEdit = {
+        const categoryEdit = {
 
-            name: this.state.name,
-            shortname: this.state.shortname,
-            unitid: this.state.unitid
+            category: this.state.category,
+            color_code: this.state.color_code,
+            categoryid: this.state.categoryid
         }
 
-        this.state.getAllcategories[this.state.editIndex].name= this.state.name
-        this.state.getAllcategories[this.state.editIndex].shortname= this.state.shortname
-        this.state.getAllcategories[this.state.editIndex].id= this.state.unitid
+        this.state.getAllcategories[this.state.editIndex].category= this.state.category
+        this.state.getAllcategories[this.state.editIndex].color_code= this.state.color_code
+        this.state.getAllcategories[this.state.editIndex].categoryid= this.state.categoryid
 
         ///this.props.planEdit(planEdit, this.props.history);
         //this.resetField();
 
-        base_url.post('unit-update', unitEdit, {
+        base_url.post('admin/edit-category', categoryEdit, {
             headers: {
                 'x-access-token': localStorage.getItem('token'),
-                'x-access-db': localStorage.getItem('dbname')
             }
         })
             .then(res => {
@@ -146,7 +145,7 @@ mobiscroll.settings = {
                 console.log(res.data.message);
                 if (res.data.value == 1) {
                     //swal("Plan is added successfully");
-                    let success = "Unit is updates successfully"
+                    let success = "Category is updates successfully"
                     showAlert(success);
                 }
                 else
@@ -168,23 +167,29 @@ handleDelete(e){
     this.setState((prevState) => ({
         getAllcategories: prevState.getAllcategories.filter((_, i) => i !== this.state.delIndex)
     }));
+    const changeStatus = {
+        categoryid: this.state.categoryid,
+        
+    }
 
-    fetch(envirionment.BASE_URL + 'unit-delete', {
+    console.log(changeStatus);
+    base_url.post('admin/delete-category' ,changeStatus, {
         method: 'post',
         headers: {
-            'x-access-db': localStorage.getItem('dbname'),
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ unitid: this.state.unitid })
-    }).then(res => res.json())
-        .then(res => {
-            console.log("DATA --- " + res + " --- " + res.value);
-            console.log(res.message);
-            if (res.value == 1)
-                showAlert("Unit is deleted successfully");
-            else
-                showAlert(res.message);
-        })
+       
+    }).then(res => {
+        console.log(res.data.value);
+        console.log(res.data.message);
+        if (res.data.value == 1) {
+            //swal("Company registraion is successfull");
+            //let success="Company registraion is successfull"
+            showAlert(res.data.message);
+        }
+        else
+            showAlert(res.data.message);
+    })
         .catch(err => {
         });
 
@@ -212,7 +217,7 @@ handleDelete(e){
                     onClose={this.handleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description" >
-                    <DialogTitle id="alert-dialog-title">{"Are sure , to delete the unit?"}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">{"Are sure , to delete the categories?"}</DialogTitle>
                     <DialogContent>
                         
                     </DialogContent>
@@ -230,7 +235,7 @@ handleDelete(e){
                     <DialogTitle id="form-dialog-title">Edit</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Edit Plan
+                            Edit Category
                         </DialogContentText>
                         <form>
                             <TextField
@@ -239,7 +244,7 @@ handleDelete(e){
                                 id="category"
                                 label="Category"
                                 name="category"
-                                value={this.state.name}
+                                value={this.state.category}
                                 fullWidth
                                 onChange={(ev) => this.handleInputChangeValue(ev)}
                             />
@@ -247,7 +252,7 @@ handleDelete(e){
                                 autoFocus
                                 margin="dense"
                                 id="color_code"
-                                value={this.state.shortname}
+                                value={this.state.color_code}
                                 label="Color Code"
                                 name="color_code"
                                 fullWidth
@@ -282,8 +287,8 @@ handleDelete(e){
                             <TableRow>
                                 <TableCell style={ tableBodyStyle }>{unit.category}</TableCell>
                                 <TableCell style={ tableBodyStyle }>{unit.color_code}</TableCell>
-                                <TableCell><EditIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClick(unit.name, unit.shortname, unit._id,i)} /></TableCell>
-                                <TableCell><DeleteIcon fontSize="small" style={delPointer} onClick={(e) => this.handleClickDelete(unit._id,i)}/></TableCell>
+                                <TableCell><EditIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClick(unit.category, unit.color_code, unit.id,i)} /></TableCell>
+                                <TableCell><DeleteIcon fontSize="small" style={delPointer} onClick={(e) => this.handleClickDelete(unit.id,i)}/></TableCell>
                             </TableRow>
 
                         )}

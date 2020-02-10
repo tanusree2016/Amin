@@ -242,7 +242,7 @@ router.post('/accept-provider', function (req, res) {
           Provider.findByPk(req.body.providerid).then((appoint) => {
 
           const mailOptions = {
-            from: 'amin@vvs', // sender address
+            from: 'tansree81@gmail.com', // sender address
             to: appoint.email,
             cc: 'tanusreekolkata2013@gmail.com', // cc
             subject: 'Account accepted successfully!!', // Subject line

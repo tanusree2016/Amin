@@ -73,7 +73,8 @@ import DefaultPage from '../../Components/admin/DefaultPage';
 import AddCategory from '../../Components/aminAdmin/category/addCategories';
 import SubCategory from '../../Components/aminAdmin/subcategory/addSubcategory';
 import Providers from '../../Components/aminAdmin/provider/providerlist';
-import ServiceProvider from '../../Components/aminAdmin/provider/serviceproviderlist'
+import ServiceProvider from '../../Components/aminAdmin/provider/serviceproviderlist';
+import ChildSubCategory from '../../Components/aminAdmin/finalcategory/addfinalcategories';
 
 
 const drawerWidth = 240;
@@ -219,6 +220,8 @@ export default function AdminLayout() {
     setComponent("providers")
     if(index==4)
     setComponent("serviceproviders")
+    if(index==5)
+    setComponent("childsubcategory")
     // if (index == 1)
     //   setOpen(!open);
     // if (index == 1.1)
@@ -418,6 +421,12 @@ export default function AdminLayout() {
                 <ListItem button selected={selectedIndex === 1} onClick={event => handleListItemClick(event, 1)}>
                   <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
                   <ListItemText primary="Category" style={{ color: '#FFFFFF' }} />
+                </ListItem>
+              </List>
+              <List>
+                <ListItem button selected={selectedIndex === 5} onClick={event => handleListItemClick(event, 5)}>
+                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+                  <ListItemText primary="Child Sub Category" style={{ color: '#FFFFFF' }} />
                 </ListItem>
               </List>
               <List>
@@ -646,6 +655,12 @@ export default function AdminLayout() {
         {
           component === 'serviceproviders' ?
           <ServiceProvider />
+          :
+          ''
+        }
+        {
+          component === 'childsubcategory' ?
+          <ChildSubCategory />
           :
           ''
         }
