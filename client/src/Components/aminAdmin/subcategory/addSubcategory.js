@@ -137,7 +137,7 @@ class AddSubcategory extends Component {
 
     resetField = () => {
         this.setState({ subcategory: '' });
-        this.setState({ category_id: '' });
+        this.setState({ category: '' });
        
     }
 
@@ -227,7 +227,7 @@ class AddSubcategory extends Component {
                                 id="subcategory"
                                 label="Sub Category"
                                 name="subcategory"
-                                value={this.state.designation}
+                                value={this.state.subcategory}
                                 onChange={(ev) => this.handleInputChangeValue(ev, 1)}
                             />
 

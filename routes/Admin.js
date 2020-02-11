@@ -3,6 +3,7 @@ const router = express.Router();
 const Consumer = require('../model/Consumer');
 const Service = require('../model/Categories');
 const SubCategories = require('../model/Subcategory');
+const SubCategoryChild = require('../model/SubCategoryChild');
 const Admin = require('../model/Admin');
 const Provider = require('../model/Provider');
 const Skills = require('../model/Skill');
@@ -173,7 +174,16 @@ router.post('/add-subcategory', function (req, res) {
 
 
 router.get('/list-subcategory', function (req, res) {
-    SubCategories.findAll().then(subcat=>{
+    SubCategories.belongsTo(Service, { foreignKey: 'category_id' });
+
+    SubCategories.findAll({
+        include: [
+            {
+                model: Service
+            }
+        ]
+      }
+    ).then(subcat=>{
         if(!subcat){
             return res.status(400).send({
                 value: 0,
@@ -231,29 +241,92 @@ router.post('/edit-subcategory', function(req,res){
 });
 
 router.post('/add-finalsubcategory', function(req,res){
+    console.log('hiii');
+    console.log(req.body);
+    const subcategory = new SubCategoryChild({
+        subcategoryid: req.body.category_id,
+        name: req.body.subcategory,
+    });
+    subcategory.save().then(subcategories=>{
+        if(!subcategories){
+            return res.status(400).send({
+                value: 0,
+                message: 'Not saved error'
+            });
+        }
+        else{
+            return res.status(200).send({
+                value: 1,
+                message: 'Succefully added subcategory',
+                data: subcategories
+            });
+        }
+    })
+});
+
+router.get('/list-finalsubcategory', function(req,res){
+    SubCategoryChild.belongsTo(SubCategories, { foreignKey: 'subcategoryid' });
+    SubCategoryChild.findAll({ include: [
+        {
+            model: SubCategories
+        }
+    ]}).then(subcat=>{
+        if(!subcat){
+            return res.status(400).send({
+                value: 0,
+                message: 'error'
+            });
+        }
+        else{
+            return res.status(200).send({
+                value: 1,
+                message: 'Succesfull',
+                Service: subcat
+            });
+        }
+    })
+});
+
+router.post('/delete-finalsubcategory', function(req,res){
+    console.log(req.body);
+    SubCategoryChild.findByPk(req.body.subcategoryid).then((appoint) => {
+        appoint.destroy().then(function(appoint){
+            res.json({value:1, message: ' Sub Category Deleted Successfully' })
+        })
+        
+    });
+});
+
+
+router.post('/edit-finalsubcategory', function(req,res){
 
     console.log(req.body);
-    // const subcategory = new SubCategories({
-    //     category_id: req.body.category_id,
-    //     subcategory: req.body.subcategory,
-    // });
-    // subcategory.save().then(subcategories=>{
-    //     if(!subcategories){
-    //         return res.status(400).send({
-    //             value: 0,
-    //             message: 'Not saved error'
-    //         });
-    //     }
-    //     else{
-    //         return res.status(200).send({
-    //             value: 1,
-    //             message: 'Succefully added subcategory',
-    //             data: subcategories
-    //         });
-    //     }
-    // })
-})
+    const values = {
+        subcategoryid: req.body.category,
+        name: req.body.subcategory,
+      }
+      const selector = {
+        where: { id: req.body.subcategoryid },
+      };
+    
+      SubCategoryChild.update(values, selector).then(service => {
 
+        if (!service) {
+            return res.status(400).send({
+                value: 0,
+                message: 'Something wrong'
+              });
+          }
+          else{
+            
+            return res.status(200).send({
+                value: 1,
+                message: 'success'
+              });
+          }
+
+      });
+});
 
 
 

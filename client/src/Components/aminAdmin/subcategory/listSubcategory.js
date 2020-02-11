@@ -18,6 +18,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import mobiscroll from '@mobiscroll/react-lite';
 import '@mobiscroll/react-lite/dist/css/mobiscroll.min.css';
 import base_url from '../../../common/utils/axios';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 mobiscroll.settings = {
     theme: 'ios',
@@ -31,7 +33,8 @@ mobiscroll.settings = {
   }
 
   var categoryArray = [];
-
+  var desigNameArray = [];
+  var desigIdArray = [];
   class ListSubCategories extends Component {
 
     constructor(props) {
@@ -40,6 +43,8 @@ mobiscroll.settings = {
             getAllsubcategories: [],
             subcategory: '',
             subcategories: [],
+            getAllCategory: [],
+            category:'',
             delIndex: -1,
             editIndex: -1,
             
@@ -58,11 +63,14 @@ mobiscroll.settings = {
         });
     };
 
+    
+
     handleClick(e, f, g,index) {
         this.setState({
             open: true,
             subcategory: e,
-            subcategoryid: g,
+            subcategoryid: f,
+            category: g,
             editIndex: index,
         });
 
@@ -97,9 +105,10 @@ mobiscroll.settings = {
                 this.setState({
                     getAllcategories: res.Service
                 });
+                console.log('--'+JSON.stringify(res.Service));
                 for (let i = 0; i < res.Service.length; i++) {
                     categoryArray.push(res.Service[i].name);
-                    this.setState({ category: res.Service[i].subcategory })
+                    this.setState({ category: res.Service[i].category_id })
                     this.setState({ subcategory: res.Service[i].subcategory })
                     this.setState({ subcategoryid: res.Service[i].id })
                     // this.setState({ color_code: res.Service[i].color_code })                    
@@ -112,6 +121,33 @@ mobiscroll.settings = {
             console.log("Calling --- End ---  ");
         this.forceUpdate();
 
+    }
+
+
+    fetchcategory() {
+
+        this.setState({ loading: true }, () => {
+            fetch(envirionment.BASE_URL + 'consumer/services/', {
+                method: "GET",
+                headers: {
+                    'x-access-token': localStorage.getItem('token'),
+                    
+                }
+            }).then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                    this.setState({
+                        getAllCategory: res.Service,
+                        loading: false,
+                    });
+
+                    for (let i = 0; i < res.Service.length; i++) {
+                        desigNameArray.push(res.Service[i].category);
+                        desigIdArray.push(res.Service[i].id);
+                       
+                    }
+                })
+        })
     }
 
     handleSubmit(e) {
@@ -128,6 +164,7 @@ mobiscroll.settings = {
 
         this.state.getAllcategories[this.state.editIndex].subcategory= this.state.subcategory
         this.state.getAllcategories[this.state.editIndex].subcategoryid= this.state.subcategoryid
+        this.state.getAllcategories[this.state.editIndex].category= this.state.category
 
         base_url.post('admin/edit-subcategory', unitEdit, {
             headers: {
@@ -175,14 +212,14 @@ handleDelete(e){
             "Content-Type": "application/json"
         },
        
-    }).then(res => res.json())
-        .then(res => {
-            console.log("DATA --- " + res + " --- " + res.value);
-            console.log(res.message);
-            if (res.value == 1)
-                showAlert("Subcategory is deleted successfully");
-            else
-                showAlert(res.message);
+    }).then(res => {
+        if (res.data.value == 1) {
+            let success = "Sub Category is Deleted successfully"
+            showAlert(success);
+        }
+        else{
+            showAlert(res.data.message);
+        }
         })
         .catch(err => {
         });
@@ -193,6 +230,19 @@ handleDelete(e){
     componentDidMount() {
         console.log("Child calling ------ ");
         this.fetchUnit();
+        this.fetchcategory();
+    }
+
+    handleInputChangeValueCategory(event, id) {
+        let nam = event ? event.target.name : event;
+        let val = event ? event.target.value : event;
+        this.setState({ [nam]: val });
+        for (let i = 0; i < this.state.getAllCategory.length; i++) {
+            if (JSON.stringify(desigIdArray.pop(i)) == val) {
+                console.log("entered");
+                this.state.id = val;
+            }
+        }
     }
 
     render() {
@@ -201,8 +251,13 @@ handleDelete(e){
         const likePointer = { cursor: 'pointer' , color: 'blue' };
         const delPointer = { cursor: 'pointer' , color: 'red' };
 
-        const tableHeadStyle= { fontWeight: 'bold' , fontSize: '15px' , color: 'black' }
-        const tableBodyStyle= { fontSize: '12px' }
+        const tableHeadStyle= { fontWeight: 'bold' , fontSize: '15px' , color: 'black' };
+        const tableBodyStyle= { fontSize: '12px' };
+
+        const formControl = {
+            minWidth: 150,
+            marginLeft: 15,
+        };
 
         return (
             <div>
@@ -211,7 +266,7 @@ handleDelete(e){
                     onClose={this.handleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description" >
-                    <DialogTitle id="alert-dialog-title">{"Are sure , to delete the unit?"}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">{"Are sure , to delete the subcategories?"}</DialogTitle>
                     <DialogContent>
                         
                     </DialogContent>
@@ -232,6 +287,25 @@ handleDelete(e){
                             Edit Subcategory
                         </DialogContentText>
                         <form>
+
+                        <div id='1' style={{ paddingLeft: '5px', paddingRight: '5px' }}>
+                            <FormControl style={formControl}>
+                                <InputLabel htmlFor="Category">Category</InputLabel>
+                                <Select
+                                    value={this.state.category}
+                                    onChange={(ev) => this.handleInputChangeValueCategory(ev)}
+                                    inputProps={{
+                                        name: 'category',
+                                        id: 'category',
+                                    }}
+                                >
+                                    {this.state.getAllCategory.map(module => (
+                                        <MenuItem value={module.id}>{module.category}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                          
+                        </div>
                             <TextField
                                 autoFocus
                                 margin="dense"
@@ -259,6 +333,7 @@ handleDelete(e){
                     <TableHead>
                         <TableRow>
                             <TableCell style={ tableHeadStyle }>Sub Category</TableCell>
+                            <TableCell style={ tableHeadStyle }>Category</TableCell>
                             <TableCell style={ tableHeadStyle }>Edit</TableCell>
                             <TableCell style={ tableHeadStyle }>Delete</TableCell>
 
@@ -270,7 +345,8 @@ handleDelete(e){
 
                             <TableRow>
                                 <TableCell style={ tableBodyStyle }>{unit.subcategory}</TableCell>
-                                <TableCell><EditIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClick(unit.subcategory, unit.id,i)} /></TableCell>
+                                <TableCell style={ tableBodyStyle }>{unit.amin_service_category.category}</TableCell>
+                                <TableCell><EditIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClick(unit.subcategory,unit.id,unit.category_id,i)} /></TableCell>
                                 <TableCell><DeleteIcon fontSize="small" style={delPointer} onClick={(e) => this.handleClickDelete(unit.id,i)}/></TableCell>
                             </TableRow>
 

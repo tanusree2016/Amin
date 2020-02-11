@@ -424,18 +424,18 @@ export default function AdminLayout() {
                 </ListItem>
               </List>
               <List>
-                <ListItem button selected={selectedIndex === 5} onClick={event => handleListItemClick(event, 5)}>
-                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Child Sub Category" style={{ color: '#FFFFFF' }} />
-                </ListItem>
-              </List>
-              <List>
                 <ListItem button selected={selectedIndex === 2} onClick={event => handleListItemClick(event, 2)}>
                   <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
                   <ListItemText primary="Sub Category" style={{ color: '#FFFFFF' }} />
                 </ListItem>
               </List>
               <List>
+                <ListItem button selected={selectedIndex === 5} onClick={event => handleListItemClick(event, 5)}>
+                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+                  <ListItemText primary="Child Sub Category" style={{ color: '#FFFFFF' }} />
+                </ListItem>
+              </List>
+             <List>
                 <ListItem button selected={selectedIndex === 3} onClick={event => handleListItemClick(event, 3)}>
                   <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
                   <ListItemText primary="Pending Providers" style={{ color: '#FFFFFF' }} />

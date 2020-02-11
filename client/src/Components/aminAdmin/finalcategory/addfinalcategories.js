@@ -12,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker, } from '@material-ui/pickers';
 import mobiscroll from '@mobiscroll/react-lite';
 import '@mobiscroll/react-lite/dist/css/mobiscroll.min.css';
+import ListFinalCategories from './listfinalcategories';
 
 
 mobiscroll.settings = {
@@ -28,13 +29,13 @@ function showAlert(text) {
 var desigNameArray = [];
 var desigIdArray = [];
 
-class AddFinalcategory extends Component {
+class AddFinalCategory extends Component {
 
     constructor() {
         super();
         this.state = {
-            name: '',
-            subcategory_id: '',
+            subcategory: '',
+            category_id: '',
             getAllCategory: [],
             showChild: true,
             loading: false, // will be true when ajax request is running
@@ -61,7 +62,7 @@ class AddFinalcategory extends Component {
             fetch(envirionment.BASE_URL + 'admin/list-subcategory/', {
                 method: "GET",
                 headers: {
-                    //'x-access-token': localStorage.getItem('token'),
+                    'x-access-token': localStorage.getItem('token'),
                     
                 }
             }).then(res => res.json())
@@ -73,8 +74,7 @@ class AddFinalcategory extends Component {
                     });
 
                     for (let i = 0; i < res.Service.length; i++) {
-                        desigNameArray.push(res.Service[i].name);
-                        desigNameArray.push(res.Service[i].subcategoryid);
+                        desigNameArray.push(res.Service[i].subcategory);
                         desigIdArray.push(res.Service[i].id);
                        
                     }
@@ -113,13 +113,15 @@ class AddFinalcategory extends Component {
         e.preventDefault();
   
             const subcategoryAdd = {
-                name: this.state.name,
-                subcategoryid	: this.state.subcategoryid	,
+                subcategory: this.state.subcategory,
+                category_id: this.state.category,
             }
-           console.log('----'+subcategoryAdd);
+
+            console.log('-----'+subcategoryAdd);
+           
             base_url.post('admin/add-finalsubcategory', subcategoryAdd, {
                 headers: {
-                    'x-access-token': localStorage.getItem('token'),
+                   // 'x-access-token': localStorage.getItem('token'),
                 }
             })
                 .then(res => {
@@ -137,7 +139,7 @@ class AddFinalcategory extends Component {
 
     resetField = () => {
         this.setState({ subcategory: '' });
-        this.setState({ category_id: '' });
+        this.setState({ category: '' });
        
     }
 
@@ -201,13 +203,13 @@ class AddFinalcategory extends Component {
 
                         <div id='1' style={{ paddingLeft: '5px', paddingRight: '5px' }}>
                             <FormControl style={formControl}>
-                                <InputLabel htmlFor="Category">Sub Category</InputLabel>
+                                <InputLabel htmlFor="Category">Category</InputLabel>
                                 <Select
                                     value={this.state.category}
                                     onChange={(ev) => this.handleInputChangeValueCategory(ev)}
                                     inputProps={{
-                                        name: 'subcategory',
-                                        id: 'subcategory',
+                                        name: 'category',
+                                        id: 'category',
                                     }}
                                 >
                                     {this.state.getAllCategory.map(module => (
@@ -226,8 +228,8 @@ class AddFinalcategory extends Component {
                                 required
                                 id="subcategory"
                                 label="Sub Category"
-                                name="name"
-                                value={this.state.designation}
+                                name="subcategory"
+                                value={this.state.subcategory}
                                 onChange={(ev) => this.handleInputChangeValue(ev, 1)}
                             />
 
@@ -247,9 +249,9 @@ class AddFinalcategory extends Component {
                     </form>
                     <br /><br />
                    
-                    {/* {this.state.showChild ?
-          <ListSubCategories reloadChild={this.reloadChild} /> : null
-        } */}
+                    {this.state.showChild ?
+                        <ListFinalCategories reloadChild={this.reloadChild} /> : null
+                    }
                 </div>
             )
         }
@@ -258,7 +260,7 @@ class AddFinalcategory extends Component {
 }
 
 
-AddFinalcategory.propTypes = {
+AddFinalCategory.propTypes = {
     classes: PropTypes.object.isRequired,
     //designationAdd: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
@@ -268,4 +270,4 @@ const mapStateToProps = state => ({
     auth: state.auth,
     errors: state.errors
 });
-export default connect(mapStateToProps)(AddFinalcategory)
+export default connect(mapStateToProps)(AddFinalCategory)
