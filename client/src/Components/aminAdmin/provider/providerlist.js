@@ -42,11 +42,13 @@ mobiscroll.settings = {
             getAllprovider: [],
             providers: [],
             delIndex: -1,
+            rejIndex: -1,
             viewIndex: -1,
       
         };
 
         this.handleAccept = this.handleAccept.bind(this);
+        this.handleReject = this.handleReject.bind(this);
       
     }
 
@@ -54,6 +56,7 @@ mobiscroll.settings = {
         this.setState({
             open: false,
             open1: false,
+            open2: false,
          });
     };
 
@@ -65,6 +68,14 @@ mobiscroll.settings = {
             providerid: e,
             delIndex: index,
         });
+    }
+
+    handleClickReject(e, index) {
+        this.setState({
+            open2: true,
+            providerid: e,
+            rejIndex: index,
+        })
     }
 
     handleClickView(a,b,c,d,e,f,g,h,i,j,k,index) {
@@ -115,8 +126,42 @@ mobiscroll.settings = {
             .catch(e => console.log(e))
         //this.props.changeStatus(changeStatus, this.props.history);
         this.handleClose();
-       this.forceUpdate();
-      //  this.fetchProviders();
+      // this.forceUpdate();
+        //this.fetchProviders();
+    }
+
+
+    handleReject(e){
+        e.preventDefault();
+        console.log('--id'+this.state.providerid)
+        const changeStatus = {
+            providerid: this.state.providerid,
+
+        }
+
+        this.setState((prevState) => ({
+            getAllprovider: prevState.getAllprovider.filter((_, i) => i !== this.state.rejIndex)
+        }));
+        base_url.post('service/reject-provider', changeStatus, {
+            headers: {
+               // 'x-access-token': localStorage.getItem('token')
+            }
+        })
+            .then(res => {
+                console.log(res.data.value);
+                console.log(res.data.message);
+                if (res.data.value == 1) {
+                    showAlert(res.data.message);
+                }
+                else
+                    showAlert(res.data.message);
+            })
+            .catch(e => console.log(e))
+      
+        this.handleClose();
+     //  this.forceUpdate();
+    // this.fetchProviders();
+    
     }
 
     
@@ -156,7 +201,7 @@ mobiscroll.settings = {
     }
 
     render() {
-        const { open, open1 } = this.state;
+        const { open, open1, open2 } = this.state;
         
         const likePointer = { cursor: 'pointer' , color: 'blue' };
         const delPointer = { cursor: 'pointer' , color: 'red' };
@@ -180,6 +225,26 @@ mobiscroll.settings = {
                             Disagree
                         </Button>
                         <Button onClick={this.handleAccept}  color="secondary" autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+
+                <Dialog
+                    open={open2}
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description" >
+                    <DialogTitle id="alert-dialog-title">{"Are sure , Want to reject this service provider?"}</DialogTitle>
+                    <DialogContent>
+                        
+                    </DialogContent>
+                    <DialogActions>
+                        <Button style={{fontWeight: 'bold'}} onClick={this.handleClose} color="primary">
+                            Disagree
+                        </Button>
+                        <Button onClick={this.handleReject}  color="secondary" autoFocus>
                             Agree
                         </Button>
                     </DialogActions>
@@ -320,9 +385,18 @@ mobiscroll.settings = {
                                 <TableCell style={ tableBodyStyle }>{unit.name}</TableCell>
                                 <TableCell style={ tableBodyStyle }>{unit.email}</TableCell>
                                 <TableCell style={ tableBodyStyle }>{unit.phone}</TableCell>
-                                <TableCell style={ tableBodyStyle }>{unit.is_verified}</TableCell>
-                                
-                                <TableCell style={tableBodyStyle} onClick={(e) => this.handleClickAccept(unit.id, i)}><a href="#">Accept</a></TableCell>
+                                {unit.is_verified === "unverified" ?
+                                <TableCell style={ tableBodyStyle }>Pending</TableCell>
+                                : (unit.is_verified === "verified" ?
+                                <TableCell style={ tableBodyStyle }>Approved</TableCell>
+                                :
+                                <TableCell style={ tableBodyStyle }>Rejected</TableCell>
+                                )}
+                                 {unit.is_verified === "unverified" ?
+                                <TableCell style={tableBodyStyle} ><a href="#" onClick={(e) => this.handleClickAccept(unit.id, i)}>Accept</a><br/><a href="#" onClick={(e) => this.handleClickReject(unit.id, i)}>Reject</a></TableCell>
+                                :
+                                <TableCell style={tableBodyStyle} >------</TableCell>
+                                }
                                 <TableCell><VisibilityIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClickView(unit.id,unit.name,unit.email,unit.phone,unit.dob,unit.city,unit.state,unit.postalcode,unit.address,unit.experience,unit.salary_hr, i)}></VisibilityIcon></TableCell>
                                 
                             </TableRow>

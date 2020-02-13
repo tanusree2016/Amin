@@ -12,6 +12,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const jwt_config = require('../jwt.config');
 const fs = require('fs');
+const MasterLocation = require('../model/MasterLocation');
+const Country = require('../model/Country');
+const State = require('../model/State');
 
 router.post('/login', function (req, res) {
     if (!req.body.email) {
@@ -327,6 +330,149 @@ router.post('/edit-finalsubcategory', function(req,res){
 
       });
 });
+
+
+router.post('/master-location', function(req,res){
+    const location = new MasterLocation({
+        country_id: req.body.country_id,
+        state_id: req.body.state_id,
+        city: req.body.city
+    });
+
+    location.save().then(loc=>{
+        if(!loc){
+            return res.status(400).send({
+                value: 0,
+                message: 'Not saved error'
+            });
+        }   
+        else{
+            return res.status(200).send({
+                value: 1,
+                message: 'Succefully added location',
+                data: loc
+            });
+        }
+    })
+});
+
+router.get('/country-list', function(req,res){
+    Country.findAll().then(country=>{
+        if(!country){
+            return res.status(400).send({
+                value:0,
+                message: 'Error'
+            });
+        }
+        else{
+            return res.status(200).send({
+                value: 1,
+                message: 'success',
+                data: country
+            })
+        }
+    })
+});
+
+
+router.get('/state-list/:country_id', function(req,res){
+    State.findAll({where:{country_id:req.params.country_id}}).then(country=>{
+        if(!country){
+            return res.status(400).send({
+                value:0,
+                message: 'Error'
+            });
+        }
+        else{
+            return res.status(200).send({
+                value: 1,
+                message: 'success',
+                data: country
+            })
+        }
+    })
+});
+
+
+router.get('/master-country-list', function(req,res){
+    MasterLocation.belongsTo(Country, { foreignKey: 'country_id' });
+
+    MasterLocation.findAll({
+        include: [
+            {
+                model: Country
+            }
+        ],
+      //  attributes: ['country.name'],
+    }
+    ).then(location=>{
+        if(!location){
+            return res.status(400).send({
+                value:0,
+                message: 'Error'
+            });
+        }
+        else{
+          return res.status(200).send({
+                value: 1,
+                message: 'success',
+                data: location
+            })
+        }
+    })
+
+});
+
+
+router.post('/master-state-list', function(req,res){
+    MasterLocation.belongsTo(State, { foreignKey: 'state_id' });
+    MasterLocation.findAll({
+        include: [
+            {
+                model: State
+            }
+        ],
+        group: ['state_id'],
+       where: {country_id: req.body.country_id},
+    }
+    ).then(state=>{
+        if(!state){
+            return res.status(400).send({
+                value:0,
+                message: 'Error'
+            });
+        }
+        else{
+          return res.status(200).send({
+                value: 1,
+                message: 'success',
+                data: state
+            })
+        }
+    })
+});
+
+router.post('/master-city-list', function(req,res){
+    MasterLocation.findAll({
+       where: {country_id: req.body.country_id, state_id : req.body.state_id},
+    }
+    ).then(city=>{
+        if(!city){
+            return res.status(400).send({
+                value:0,
+                message: 'Error'
+            });
+        }
+        else{
+          return res.status(200).send({
+                value: 1,
+                message: 'success',
+                data: city
+            })
+        }
+    })
+})
+
 
 
 

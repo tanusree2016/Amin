@@ -9,7 +9,10 @@ const jwt = require('jsonwebtoken');
 const jwt_config = require('../jwt.config');
 const nodemailer = require('nodemailer');
 const Nexmo = require('nexmo');
-var otpGenerator = require('otp-generator')
+var otpGenerator = require('otp-generator');
+var ProviderFiles = require('../model/ProviderFile');
+const fs = require('fs');
+var randomize = require('randomatic');
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
@@ -164,20 +167,33 @@ router.post('/sub-categories-child', function (req, res) {
 
 router.post('/full-registration', function (req, res) {
 
-  // let filename = '';
-  //   if (req.body.category_image.file) {
-  //     var base64Data = req.body.category_image.file;
-  //     filename = 'prof_' + req.body.category + '.' + req.body.extension;
-  //     fs.writeFile("./uploads/categories/" + filename, base64Data, 'base64', function (err) {
-  //       if (err) console.log(err);
+ //console.log(JSON.stringify(req.body));
+  
+  var file = req.body.file.split(',')[1];
+  //res.json({'file':file});
+   var type = req.body.file.split(';')[0].split('/')[1];
+   if(type=='jpeg'){
+     type= 'jpg';
+   }
+//   console.log('type'+type);
+//  console.log('fffff'+file);
 
-  //     });
+  let filename = '';
+    if (req.body.file) {
+      var base64Data = file;
+      filename = 'doc'+ randomize('A', 3) + req.body.name + '.' + type;
+      fs.writeFile("./uploads/docs/" + filename, base64Data, 'base64', function (err) {
+        if (err) console.log(err);
 
-  //   }
-  //   else {
-  //     filename = '';
-  //   }
+      });
 
+    }
+    else {
+      filename = '';
+    }
+
+
+     //console.log('---files'+filename)
   const values = {
     name: req.body.name,
     city: req.body.city,
@@ -206,6 +222,13 @@ router.post('/full-registration', function (req, res) {
       });
     }
     else {
+
+      const provider_files = new ProviderFiles({
+        provider_id: req.body.id,
+        filename: filename
+      });
+
+      provider_files.save();
       res.status(200).send({
         value: 1,
         message: "successfull",
@@ -270,6 +293,34 @@ router.post('/accept-provider', function (req, res) {
     });
   });
 });
+
+
+router.post('/reject-provider', function(req,res){
+  const values = {
+    is_verified: 'rejected',
+  };
+
+  const selector = {
+    where: { id: req.body.providerid },
+  };
+
+  Provider.update(values, selector).then(providers => {
+    if (!providers) {
+      res.status(400).send({
+        value: 0,
+        message: "Some error occured"
+      });
+    }
+    else{
+      res.status(200).send({
+        value: 1,
+        message: "successfull",
+
+      });
+    }
+  });
+
+})
 
 router.post('/is_exits', function (req, res) {
   if (!req.body.email) {
@@ -360,7 +411,7 @@ router.post('/login', function (req, res) {
 });
 
 router.get('/provider-list', function (req, res) {
-  Provider.findAll({where: {is_verified:'unverified'}}).then(list => {
+  Provider.findAll().then(list => {
     if (!list) {
       res.status(400).send({
         value: 0,
