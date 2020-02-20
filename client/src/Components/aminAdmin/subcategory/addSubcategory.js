@@ -60,7 +60,7 @@ class AddSubcategory extends Component {
 
         this.setState({ loading: true }, () => {
             fetch(envirionment.BASE_URL + 'consumer/services/', {
-                method: "GET",
+                method: "POST",
                 headers: {
                     'x-access-token': localStorage.getItem('token'),
                     

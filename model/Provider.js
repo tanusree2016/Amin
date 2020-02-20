@@ -29,6 +29,9 @@ module.exports = db.sequelize.define(
         state: {
             type: Sequelize.STRING,
         },
+        country: {
+            type: Sequelize.STRING,
+        },
         postal_code: {
             type: Sequelize.STRING,
         },

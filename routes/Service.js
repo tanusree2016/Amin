@@ -53,6 +53,26 @@ router.post('/register', function (req, res) {
           Provid.save().then(function (providers) {
 
 
+
+            const mailOptions = {
+              from: 'tansree81@gmail.com', // sender address
+              to: req.body.email,
+              cc: 'tanusreekolkata2013@gmail.com', // cc
+              subject: 'OTP', // Subject line
+              html: 'Hello from Amin.Your OTP is:' + otp
+            };
+  
+            transporter.sendMail(mailOptions, function (err, info) {
+              if (err) {
+                console.log(err);
+                //res.json('Some Error occured');
+              } else {
+                console.log(info);
+                //res.json('Check your Mail');
+              }
+            })
+
+
             const nexmo = new Nexmo({
               apiKey: 'ad6511e7',
               apiSecret: 'Bk8CvNnFEntN3E8z',
@@ -61,17 +81,17 @@ router.post('/register', function (req, res) {
             const to = req.body.phone;
             const text = 'Hello from Amin.Your OTP is:' + otp;
 
-            //   nexmo.message.sendSms(from, to, text, (err, responseData) => {
-            //     if (err) {
-            //         console.log(err);
-            //     } else {
-            //         if(responseData.messages[0]['status'] === "0") {
-            //             console.log("Message sent successfully.");
-            //         } else {
-            //             console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-            //         }
-            //     }
-            // })
+              nexmo.message.sendSms(from, to, text, (err, responseData) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    if(responseData.messages[0]['status'] === "0") {
+                        console.log("Message sent successfully.");
+                    } else {
+                        console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+                    }
+                }
+            })
 
             if (!providers) {
               return res.status(400).send({
@@ -208,7 +228,8 @@ router.post('/full-registration', function (req, res) {
     sub_category: req.body.sub_category,
     final_category: req.body.final_category,
     experience_yr: req.body.experience_yr,
-    salary_hr: req.body.salary_hr
+    salary_hr: req.body.salary_hr,
+    country: req.body.country
   }
   const selector = {
     where: { id: req.body.id },
@@ -349,7 +370,7 @@ router.post('/is_exits', function (req, res) {
 })
 
 router.post('/login', function (req, res) {
-
+  console.log('--'+req.body.email);
   if (!req.body.email) {
     return res.status(400).send({
       value: 0,
@@ -358,6 +379,7 @@ router.post('/login', function (req, res) {
   }
   else {
     Provider.findOne({ where: { email: req.body.email } }).then(function (providers) {
+      console.log('providers'+JSON.stringify(providers))
       if (!providers) {
         return res.status(400).send({
           value: 0,
@@ -410,7 +432,7 @@ router.post('/login', function (req, res) {
 
 });
 
-router.get('/provider-list', function (req, res) {
+router.post('/provider-list', function (req, res) {
   Provider.findAll().then(list => {
     if (!list) {
       res.status(400).send({
@@ -445,6 +467,24 @@ router.get('/accepted-provider-list', function (req, res) {
       })
     }
   })
+});
+
+router.post('/service-provider-by-category', function(req,res){
+  Provider.findAll({where: {final_category: req.body.childcategory, online_offline: 1}}).then(list => {
+    if(!list){
+      res.status(400).send({
+        value: 0,
+        message: "Some error occured"
+      });
+    }
+    else{
+      res.status(200).send({
+        value: 1,
+        message: "successfull",
+        Providers: list
+      })
+    }
+  });
 })
 
 module.exports = router;

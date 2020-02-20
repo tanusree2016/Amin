@@ -12,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker, } from '@material-ui/pickers';
 import mobiscroll from '@mobiscroll/react-lite';
 import '@mobiscroll/react-lite/dist/css/mobiscroll.min.css';
+import ListLocation from './listLocation';
 
 
 mobiscroll.settings = {
@@ -108,7 +109,7 @@ class AddLocation extends Component {
     fetchCountry(){
       
             fetch(envirionment.BASE_URL + 'admin/country-list/', {
-                method: "GET",
+                method: "POST",
                 headers: {
                     //'x-access-token': localStorage.getItem('token'),
                     
@@ -134,7 +135,7 @@ class AddLocation extends Component {
     fetchState(country_id){
       
         fetch(envirionment.BASE_URL + 'admin/state-list/'+ country_id, {
-            method: "GET",
+            method: "POST",
             headers: {
                 // 'x-access-token': localStorage.getItem('token'),
                 // 'x-access-db': localStorage.getItem('dbname')
@@ -294,6 +295,12 @@ class AddLocation extends Component {
                             Submit
                     </Button>
                     </form>
+
+                    <br /><br />
+                    <ListLocation reloadChild={this.reloadChild} />
+                   {/* {this.state.showChild ?
+                       <ListLocation reloadChild={this.reloadChild} /> : null
+                   } */}
                 </div>
 
             )

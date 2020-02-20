@@ -15,6 +15,13 @@ module.exports = db.sequelize.define(
         subcategory: {
             type: Sequelize.STRING,
         },
+        
+        color_code: {
+            type: Sequelize.STRING,
+        },
+        image: {
+            type: Sequelize.STRING,
+        },
         createdAt: {
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.NOW,

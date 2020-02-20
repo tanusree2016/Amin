@@ -19,6 +19,9 @@ import mobiscroll from '@mobiscroll/react-lite';
 import '@mobiscroll/react-lite/dist/css/mobiscroll.min.css';
 import base_url from '../../../common/utils/axios';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import SearchIcon from "@material-ui/icons/Search";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from '@material-ui/core/IconButton';
 
 
 mobiscroll.settings = {
@@ -41,6 +44,10 @@ mobiscroll.settings = {
         this.state = {
             getAllprovider: [],
             providers: [],
+            searchBy: '',
+            getAllProviderList: [],
+            getAllProviderListBySearch: [],
+            getAllProviderListSearchItem: [],
             delIndex: -1,
             rejIndex: -1,
             viewIndex: -1,
@@ -96,6 +103,88 @@ mobiscroll.settings = {
         });
     }
 
+    handleInputChangeSearchValue(event) {
+        let nam = event ? event.target.name : event;
+        let val = event ? event.target.value : event;
+        console.log(nam, ":", val);
+        this.setState({ [nam]: val });
+
+        if (val === "") {
+            console.log("Clear")
+            this.state.getAllProviderListBySearch = [];
+            this.forceUpdate();
+        }
+    }
+
+    handleSearch(e) {
+        e.preventDefault();
+        this.searchItemDisplay();
+    }
+
+    _handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            this.searchItemDisplay();
+        }
+    }
+
+
+    searchItemDisplay() {
+
+        this.state.getAllProviderListBySearch = [];
+        this.state.getAllProviderListBySearchItem = [];
+        let c = 0;
+
+        for (let i = 0; i < this.state.getAllProviderList.length; i++) {
+            console.log('within for'+this.state.getAllProviderList[i].name);
+            if (this.state.searchBy === this.state.getAllProviderList[i].name) {
+                this.state.searchItemIndex = i;
+                this.state.getAllProviderListBySearch.push(this.state.getAllProviderList[i])
+                this.forceUpdate();
+                c = 1;
+                //break;
+                console.log("Fine")
+            }
+        }
+
+        // if (c == 0) {
+        //     for (let i = 0; i < this.state.getAllProviderList.length; i++) {
+        //         let sizeChildren = this.state.getAllProviderList[i].children.length;
+        //         this.state.getAllProviderListBySearchItem = []
+        //         for (let j = 0; j < sizeChildren; j++) {
+        //             this.state.getAllProviderListBySearchItem.push(this.state.getAllProviderList[i].children[j])
+        //             //console.log("this.state.getAllRequisitionBySearchItem --- " + JSON.stringify(this.state.getAllRequisitionBySearchStatus[j].status + " --- " + this.state.searchBy))
+
+        //             if (this.state.getAllProviderListBySearchItem[j].item_name.name === this.state.searchBy) {
+        //                 console.log("True ---")
+        //                 this.state.searchItemIndex = i;
+        //                 this.state.getAllProviderListBySearch.push(this.state.getAllProviderList[i])
+        //                 this.forceUpdate();
+        //                 c = 1;
+        //                 //break;
+        //                 console.log("Fine --- ")
+        //             }
+        //         }
+        //     }
+        // }
+
+        // if (c == 0) {
+        //     for (let i = 0; i < this.state.getAllProviderList.length; i++) {
+        //         if (this.state.searchBy === this.state.getAllProviderList[i].vendor_id.name) {
+        //             this.state.searchItemIndex = i;
+        //             this.state.getAllProviderListBySearch.push(this.state.getAllProviderList[i])
+        //             this.forceUpdate();
+        //             c = 1;
+        //             //break;
+        //             console.log("Fine")
+        //         }
+        //     }
+        // }
+
+        console.log("Search Calling --- " + this.state.searchBy)
+
+        console.log('call here');
+    }
+
     handleAccept(e) {
         e.preventDefault();
         
@@ -105,7 +194,7 @@ mobiscroll.settings = {
         }
 
         this.setState((prevState) => ({
-            getAllprovider: prevState.getAllprovider.filter((_, i) => i !== this.state.delIndex)
+            getAllProviderList: prevState.getAllProviderList.filter((_, i) => i !== this.state.delIndex)
         }));
         base_url.post('service/accept-provider', changeStatus, {
             headers: {
@@ -140,7 +229,7 @@ mobiscroll.settings = {
         }
 
         this.setState((prevState) => ({
-            getAllprovider: prevState.getAllprovider.filter((_, i) => i !== this.state.rejIndex)
+            getAllProviderList: prevState.getAllProviderList.filter((_, i) => i !== this.state.rejIndex)
         }));
         base_url.post('service/reject-provider', changeStatus, {
             headers: {
@@ -170,12 +259,12 @@ mobiscroll.settings = {
     fetchProviders () {
         console.log("Calling --- ");
         fetch(envirionment.BASE_URL + 'service/provider-list', {
-            method: "GET",
+            method: "POST",
             headers: { 'x-access-token': localStorage.getItem('token') }
         }).then(res => res.json())
             .then(res => {
                 this.setState({
-                    getAllprovider: res.Providers
+                    getAllProviderList: res.Providers
                 });
                 for (let i = 0; i < res.Providers.length; i++) {
                     providerArray.push(res.Providers[i].name);
@@ -206,8 +295,11 @@ mobiscroll.settings = {
         const likePointer = { cursor: 'pointer' , color: 'blue' };
         const delPointer = { cursor: 'pointer' , color: 'red' };
 
-        const tableHeadStyle= { fontWeight: 'bold' , fontSize: '15px' , color: 'black' }
-        const tableBodyStyle= { fontSize: '12px' }
+        const tableHeadStyle= { fontWeight: 'bold' , fontSize: '15px' , color: 'black' };
+        const tableBodyStyle= { fontSize: '12px' };
+        const searchtextfieldHeight = {
+            width: 350,
+        };
 
         return (
             <div>
@@ -363,7 +455,25 @@ mobiscroll.settings = {
                        
                     </Dialog>
 
-
+                    <div align="right">
+                        <TextField style={searchtextfieldHeight}
+                            label="Search"
+                            id="searchBy"
+                            name="searchBy"
+                            value={this.state.searchBy}
+                            onChange={this.handleInputChangeSearchValue.bind(this)}
+                            onKeyDown={this._handleKeyDown}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment>
+                                        <IconButton>
+                                            <SearchIcon onClick={this.handleSearch.bind(this)} />
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                    </div>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -377,8 +487,10 @@ mobiscroll.settings = {
 
                         </TableRow>
                     </TableHead>
+                    {this.state.getAllProviderListBySearch.length > 0 ?
                     <TableBody>
-                        {this.state.getAllprovider && this.state.getAllprovider.map((unit, i) =>
+                        
+                        {this.state.getAllProviderListBySearch.length > 0 && this.state.getAllProviderListBySearch.map((unit, i) =>
 
 
                             <TableRow>
@@ -402,7 +514,41 @@ mobiscroll.settings = {
                             </TableRow>
 
                         )}
-                    </TableBody></Table>
+                    </TableBody>
+                    :
+                    [(this.state.getAllProviderList.length > 0 ?
+
+                        <TableBody>
+                        
+                        {this.state.getAllProviderList && this.state.getAllProviderList.map((unit, i) =>
+
+
+                            <TableRow>
+                                <TableCell style={ tableBodyStyle }>{unit.name}</TableCell>
+                                <TableCell style={ tableBodyStyle }>{unit.email}</TableCell>
+                                <TableCell style={ tableBodyStyle }>{unit.phone}</TableCell>
+                                {unit.is_verified === "unverified" ?
+                                <TableCell style={ tableBodyStyle }>Pending</TableCell>
+                                : (unit.is_verified === "verified" ?
+                                <TableCell style={ tableBodyStyle }>Approved</TableCell>
+                                :
+                                <TableCell style={ tableBodyStyle }>Rejected</TableCell>
+                                )}
+                                 {unit.is_verified === "unverified" ?
+                                <TableCell style={tableBodyStyle} ><a href="#" onClick={(e) => this.handleClickAccept(unit.id, i)}>Accept</a><br/><a href="#" onClick={(e) => this.handleClickReject(unit.id, i)}>Reject</a></TableCell>
+                                :
+                                <TableCell style={tableBodyStyle} >------</TableCell>
+                                }
+                                <TableCell><VisibilityIcon fontSize="small" style={likePointer} onClick={(e) => this.handleClickView(unit.id,unit.name,unit.email,unit.phone,unit.dob,unit.city,unit.state,unit.postalcode,unit.address,unit.experience,unit.salary_hr, i)}></VisibilityIcon></TableCell>
+                                
+                            </TableRow>
+
+                        )}
+                    </TableBody> :
+                    <h3>No List Found</h3>
+                    )]
+                }
+                </Table>
             </div>
         )
     }

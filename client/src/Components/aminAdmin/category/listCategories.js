@@ -92,7 +92,7 @@ mobiscroll.settings = {
     fetchUnit () {
         console.log("Calling --- ");
         fetch(envirionment.BASE_URL + 'consumer/services', {
-            method: "GET",
+            method: "POST",
             headers: { 'x-access-token': localStorage.getItem('token') }
         }).then(res => res.json())
             .then(res => {
@@ -109,7 +109,7 @@ mobiscroll.settings = {
 
                
             })
-            console.log("Calling --- End ---  ");
+            console.log("Calling --- End ---  "+this.state.getAllcategories);
         this.forceUpdate();
 
     }

@@ -15,9 +15,16 @@ module.exports = db.sequelize.define(
         name: {
             type: Sequelize.STRING,
         },
+
+        color_code: {
+            type: Sequelize.STRING,
+        },
+        image: {
+            type: Sequelize.STRING,
+        },
         createdAt: {
-                type: Sequelize.DATE,
-                defaultValue: Sequelize.NOW,
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.NOW,
             },
         updatedAt: {
             type: Sequelize.DATE,

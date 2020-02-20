@@ -60,7 +60,7 @@ class AddFinalCategory extends Component {
 
         this.setState({ loading: true }, () => {
             fetch(envirionment.BASE_URL + 'admin/list-subcategory/', {
-                method: "GET",
+                method: "POST",
                 headers: {
                     'x-access-token': localStorage.getItem('token'),
                     

@@ -15,6 +15,9 @@ const fs = require('fs');
 const MasterLocation = require('../model/MasterLocation');
 const Country = require('../model/Country');
 const State = require('../model/State');
+const Sequelize = require('sequelize');
+const db = require('../db');
+
 
 router.post('/login', function (req, res) {
     if (!req.body.email) {
@@ -176,7 +179,7 @@ router.post('/add-subcategory', function (req, res) {
 });
 
 
-router.get('/list-subcategory', function (req, res) {
+router.post('/list-subcategory', function (req, res) {
     SubCategories.belongsTo(Service, { foreignKey: 'category_id' });
 
     SubCategories.findAll({
@@ -267,7 +270,7 @@ router.post('/add-finalsubcategory', function(req,res){
     })
 });
 
-router.get('/list-finalsubcategory', function(req,res){
+router.post('/list-finalsubcategory', function(req,res){
     SubCategoryChild.belongsTo(SubCategories, { foreignKey: 'subcategoryid' });
     SubCategoryChild.findAll({ include: [
         {
@@ -356,7 +359,7 @@ router.post('/master-location', function(req,res){
     })
 });
 
-router.get('/country-list', function(req,res){
+router.post('/country-list', function(req,res){
     Country.findAll().then(country=>{
         if(!country){
             return res.status(400).send({
@@ -375,7 +378,7 @@ router.get('/country-list', function(req,res){
 });
 
 
-router.get('/state-list/:country_id', function(req,res){
+router.post('/state-list/:country_id', function(req,res){
     State.findAll({where:{country_id:req.params.country_id}}).then(country=>{
         if(!country){
             return res.status(400).send({
@@ -394,18 +397,43 @@ router.get('/state-list/:country_id', function(req,res){
 });
 
 
-router.get('/master-country-list', function(req,res){
-    MasterLocation.belongsTo(Country, { foreignKey: 'country_id' });
+router.post('/master-country-list', function(req,res){
+
+    // const country =  db.sequelize.query('SELECT name FROM countries INNER JOIN master_locations ON countries.id=master_locations.country_id GROUP BY name');
+    //     res.json({'country': country});
+     MasterLocation.belongsTo(Country, { foreignKey: 'country_id' });
+
+   // MasterLocation.hasOne(Country, { foreignKey: 'id' });
 
     MasterLocation.findAll({
-        include: [
+        include: //[
             {
-                model: Country
-            }
-        ],
-      //  attributes: ['country.name'],
+                model: Country,
+                required: true
+               // attributes: ['name'],
+               // required: false,
+            },
+       // ],
+        // hierarchy: true,
+         group: ['country_id'],
+         attributes: ['country.name'],
     }
     ).then(location=>{
+        
+        var newarr = []
+        location.forEach(element => {
+            console.log('ele'+JSON.stringify(element.country.name));
+            //console.log('loc'+JSON.stringify(location.country_id[element]));
+            newarr.push({
+                name: element.country.name,
+                id: element.country.id
+            }
+            )
+
+            //console.log(newarr);
+        });
+
+      //location.pop("country")
         if(!location){
             return res.status(400).send({
                 value:0,
@@ -416,7 +444,7 @@ router.get('/master-country-list', function(req,res){
           return res.status(200).send({
                 value: 1,
                 message: 'success',
-                data: location
+                data: newarr
             })
         }
     })
@@ -427,15 +455,31 @@ router.get('/master-country-list', function(req,res){
 router.post('/master-state-list', function(req,res){
     MasterLocation.belongsTo(State, { foreignKey: 'state_id' });
     MasterLocation.findAll({
+        where: {country_id: req.body.country_id},
         include: [
             {
                 model: State
             }
         ],
-        group: ['state_id'],
+       group: ['state_id'],
+    //  distinct: true,
        where: {country_id: req.body.country_id},
     }
     ).then(state=>{
+
+        var newarr = []
+        state.forEach(element => {
+            console.log('ele'+JSON.stringify(element.state.name));
+            //console.log('loc'+JSON.stringify(location.country_id[element]));
+            newarr.push({
+                name: element.state.name,
+                id: element.state.id
+            }
+            )
+
+            //console.log(newarr);
+        });
+
         if(!state){
             return res.status(400).send({
                 value:0,
@@ -446,7 +490,7 @@ router.post('/master-state-list', function(req,res){
           return res.status(200).send({
                 value: 1,
                 message: 'success',
-                data: state
+                data: newarr
             })
         }
     })
@@ -471,7 +515,84 @@ router.post('/master-city-list', function(req,res){
             })
         }
     })
+});
+
+router.post('/location-list', function(req,res){
+    MasterLocation.belongsTo(State, { foreignKey: 'state_id' });
+    MasterLocation.belongsTo(Country, { foreignKey: 'country_id' });
+
+    MasterLocation.findAll({
+        include: [
+            {
+               
+                model: Country
+            },
+            {
+               
+                model: State
+            }
+        ],
+       group: ['city'],
+
+    }
+    ).then(location=>{
+        if(!location){
+            return res.status(400).send({
+                value:0,
+                message: 'Error'
+            });
+        }
+        else{
+          return res.status(200).send({
+                value: 1,
+                message: 'success',
+                data: location
+            })
+        }
+
+    })
+});
+
+router.post('/delete-location', function(req, res){
+    
+    MasterLocation.findByPk(req.body.locationid).then((appoint) => {
+        appoint.destroy().then(function(appoint){
+            res.json({value:1, message: 'Location Deleted Successfully' })
+        })
+        
+    });
+});
+
+router.post('/edit-location' , function(req,res){
+    const values = {
+        country_id: req.body.country_id,
+        state_id: req.body.state_id,
+        city: req.body.city
+      }
+      const selector = {
+        where: { id: req.body.locationid },
+      };
+    
+      MasterLocation.update(values, selector).then(location => {
+
+        if (!location) {
+            return res.status(400).send({
+                value: 0,
+                message: 'Something wrong'
+              });
+          }
+          else{
+            
+            return res.status(200).send({
+                value: 1,
+                message: 'success'
+              });
+          }
+
+      });
 })
+
+
 
 
 
