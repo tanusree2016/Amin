@@ -20,7 +20,7 @@ import '@mobiscroll/react-lite/dist/css/mobiscroll.min.css';
 import base_url from '../../../common/utils/axios';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-
+import MUIDataTable from "mui-datatables";
 mobiscroll.settings = {
     theme: 'ios',
   }
@@ -47,6 +47,7 @@ mobiscroll.settings = {
             category:'',
             delIndex: -1,
             editIndex: -1,
+            getAllcategories: [],
             
 
         };
@@ -65,12 +66,13 @@ mobiscroll.settings = {
 
     
 
-    handleClick(e, f, g,index) {
+    handleClick(e, f,index) {
+
         this.setState({
             open: true,
-            subcategory: e,
-            subcategoryid: f,
-            category: g,
+            subcategory: f.rowData[0],
+            subcategoryid: f.rowData[3],
+            category:f.rowData[2],
             editIndex: index,
         });
 
@@ -88,7 +90,7 @@ mobiscroll.settings = {
     handleInputChangeValue(event) {
         let nam = event ? event.target.name : event;
         let val = event ? event.target.value : event;
-        console.log(nam, ":", val);
+
         this.setState({ [nam]: val });
     }
 
@@ -96,7 +98,7 @@ mobiscroll.settings = {
 
 
     fetchUnit () {
-        console.log("Calling --- ");
+     
         fetch(envirionment.BASE_URL + 'admin/list-subcategory', {
             method: "POST",
             headers: { 'x-access-token': localStorage.getItem('token') }
@@ -105,7 +107,7 @@ mobiscroll.settings = {
                 this.setState({
                     getAllcategories: res.Service
                 });
-                console.log('--'+JSON.stringify(res.Service));
+               
                 for (let i = 0; i < res.Service.length; i++) {
                     categoryArray.push(res.Service[i].name);
                     this.setState({ category: res.Service[i].category_id })
@@ -113,12 +115,12 @@ mobiscroll.settings = {
                     this.setState({ subcategoryid: res.Service[i].id })
                     // this.setState({ color_code: res.Service[i].color_code })                    
                 }
-                console.log('array' + categoryArray);
+              
                 this.setState({ category: categoryArray })
 
                
             })
-            console.log("Calling --- End ---  ");
+          
         this.forceUpdate();
 
     }
@@ -135,7 +137,7 @@ mobiscroll.settings = {
                 }
             }).then(res => res.json())
                 .then(res => {
-                    console.log(res)
+                  
                     this.setState({
                         getAllCategory: res.Service,
                         loading: false,
@@ -174,8 +176,7 @@ mobiscroll.settings = {
         })
             .then(res => {
                 //this.resetField();
-                console.log(res.data.value);
-                console.log(res.data.message);
+             
                 if (res.data.value == 1) {
                     //swal("Plan is added successfully");
                     let success = "Subcategories is updates successfully"
@@ -195,7 +196,7 @@ mobiscroll.settings = {
 
 handleDelete(e){
     e.preventDefault();
-   // console.log("this.state.unitid --- " + this.state.unitid)
+  
 
     this.setState((prevState) => ({
         getAllcategories: prevState.getAllcategories.filter((_, i) => i !== this.state.delIndex)
@@ -228,9 +229,15 @@ handleDelete(e){
 }
 
     componentDidMount() {
-        console.log("Child calling ------ ");
+   
         this.fetchUnit();
         this.fetchcategory();
+        this.timer = setInterval(() => this.fetchUnit(), 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer);
+        this.timer = null;
     }
 
     handleInputChangeValueCategory(event, id) {
@@ -239,11 +246,13 @@ handleDelete(e){
         this.setState({ [nam]: val });
         for (let i = 0; i < this.state.getAllCategory.length; i++) {
             if (JSON.stringify(desigIdArray.pop(i)) == val) {
-                console.log("entered");
+               
                 this.state.id = val;
             }
         }
     }
+
+    
 
     render() {
         const { open, open1 } = this.state;
@@ -258,6 +267,67 @@ handleDelete(e){
             minWidth: 150,
             marginLeft: 15,
         };
+
+        const columns = [
+            {
+                name: "Sub Category",
+                options: {
+                //filter: true,
+                }
+            },
+
+            {
+                name: "Category",
+                options: {
+                //filter: true,
+                }
+            },
+            {
+                name: "Edit",
+                options: {
+                 // filter: true,
+                  sort: false,
+                  empty: false,
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                      <button onClick={() => this.handleClick(value,tableMeta,tableMeta.rowIndex)}>
+                        Edit
+                      </button>
+                    );
+                  }
+                }
+              },
+              {
+                name: "Delete",
+                options: {
+                  filter: true,
+                  sort: false,
+                 // empty: true,
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                      <button onClick={() => this.handleClickDelete(value,tableMeta.rowIndex)}>
+                        Delete
+                      </button>
+                    );
+                  }
+                }
+              },
+        ]
+        //"Sub Category", "Parent Sub Category", "Edit", "Delete"];
+
+
+
+       const options = {
+        selectableRows: false,
+        textLabels: {
+            body: {
+              noMatch: "Please Wait until data is loading",
+              toolTip: "Sort",
+              columnHeaderTooltip: column => `Sort for ${column.label}`
+            },
+        }
+        //filterType: 'checkbox',
+      };
 
         return (
             <div>
@@ -329,7 +399,7 @@ handleDelete(e){
                     </DialogActions>
                 </Dialog>
 
-                <Table>
+                {/* <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell style={ tableHeadStyle }>Sub Category</TableCell>
@@ -351,7 +421,21 @@ handleDelete(e){
                             </TableRow>
 
                         )}
-                    </TableBody></Table>
+                    </TableBody></Table> */}
+
+                <MUIDataTable
+                    title={" Sub Category"}
+                    data={this.state.getAllcategories.map(item =>{
+                         return[
+                            item.subcategory,
+                            item.amin_service_category.category,
+                            item.category_id,
+                            item.id
+                         ]
+                    })}
+                    columns={columns}
+                    options={options}
+                    />
             </div>
         )
     }

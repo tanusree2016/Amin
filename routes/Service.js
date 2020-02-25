@@ -13,6 +13,8 @@ var otpGenerator = require('otp-generator');
 var ProviderFiles = require('../model/ProviderFile');
 const fs = require('fs');
 var randomize = require('randomatic');
+const Consumer = require('../model/Consumer');
+const Sequelize = require('sequelize');
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
@@ -59,7 +61,7 @@ router.post('/register', function (req, res) {
               to: req.body.email,
               cc: 'tanusreekolkata2013@gmail.com', // cc
               subject: 'OTP', // Subject line
-              html: 'Hello from Amin.Your OTP is:' + otp
+              html: 'Hello from beeping.me .Your OTP is:' + otp
             };
   
             transporter.sendMail(mailOptions, function (err, info) {
@@ -77,9 +79,9 @@ router.post('/register', function (req, res) {
               apiKey: 'ad6511e7',
               apiSecret: 'Bk8CvNnFEntN3E8z',
             });
-            const from = 'Amin VVS';
+            const from = 'Beeping.me';
             const to = req.body.phone;
-            const text = 'Hello from Amin.Your OTP is:' + otp;
+            const text = 'Hello from beeping.me.Your OTP is:' + otp;
 
               nexmo.message.sendSms(from, to, text, (err, responseData) => {
                 if (err) {
@@ -352,7 +354,9 @@ router.post('/is_exits', function (req, res) {
   }
   else {
     Provider.findOne({ where: { email: req.body.email } }).then(function (providers) {
-      if (!providers) {
+      Consumer.findOne({ where: { email: req.body.email } }).then(function (consume) {
+      
+      if (!providers && !consume) {
         return res.status(200).send({
           value: 1,
           message: 'success'
@@ -366,6 +370,7 @@ router.post('/is_exits', function (req, res) {
       }
 
     })
+  })
   }
 })
 
@@ -382,7 +387,7 @@ router.post('/login', function (req, res) {
       console.log('providers'+JSON.stringify(providers))
       if (!providers) {
         return res.status(400).send({
-          value: 0,
+          value: 2,
           message: 'Email id not exits. Please Register.'
         });
       }
@@ -485,6 +490,23 @@ router.post('/service-provider-by-category', function(req,res){
       })
     }
   });
+});
+
+router.post('/search', function(req,res){
+  const Op = Sequelize.Op;
+  SubCategoriesChild.findAll({ where: { name: { [Op.like]: '%'+req.body.searchString+'%' } } }).then(subcatchild=> {
+
+    console.log('---'+subcatchild);
+    if(!subcatchild){
+      res.json({
+        value:0,
+        message:"not found"
+      })
+    }
+    else{
+      res.json({value:1, message:"successfull", result:subcatchild});
+    }
+  })
 })
 
 module.exports = router;

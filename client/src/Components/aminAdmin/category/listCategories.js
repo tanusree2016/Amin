@@ -18,6 +18,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import mobiscroll from '@mobiscroll/react-lite';
 import '@mobiscroll/react-lite/dist/css/mobiscroll.min.css';
 import base_url from '../../../common/utils/axios';
+import MUIDataTable from "mui-datatables";
 
 mobiscroll.settings = {
     theme: 'ios',
@@ -59,14 +60,15 @@ mobiscroll.settings = {
         });
     };
 
-    handleClick(e, f, g,index) {
-        this.setState({
-            open: true,
-            category: e,
-            color_code: f,
-            categoryid: g,
-            editIndex: index,
-        });
+    handleClick(e, f,index) {
+    
+         this.setState({
+             open: true,
+             category: f.rowData[0],
+             color_code: f.rowData[1],
+             categoryid: e,
+             editIndex: index,
+         });
 
         
     };
@@ -82,7 +84,6 @@ mobiscroll.settings = {
     handleInputChangeValue(event) {
         let nam = event ? event.target.name : event;
         let val = event ? event.target.value : event;
-        console.log(nam, ":", val);
         this.setState({ [nam]: val });
     }
 
@@ -90,7 +91,7 @@ mobiscroll.settings = {
 
 
     fetchUnit () {
-        console.log("Calling --- ");
+        
         fetch(envirionment.BASE_URL + 'consumer/services', {
             method: "POST",
             headers: { 'x-access-token': localStorage.getItem('token') }
@@ -104,12 +105,12 @@ mobiscroll.settings = {
                     this.setState({ category: res.Service[i].category })
                     this.setState({ color_code: res.Service[i].color_code })                    
                 }
-                console.log('array' + categoryArray);
+               
                 this.setState({ category: categoryArray })
 
                
             })
-            console.log("Calling --- End ---  "+this.state.getAllcategories);
+          
         this.forceUpdate();
 
     }
@@ -141,8 +142,7 @@ mobiscroll.settings = {
         })
             .then(res => {
                 //this.resetField();
-                console.log(res.data.value);
-                console.log(res.data.message);
+               
                 if (res.data.value == 1) {
                     //swal("Plan is added successfully");
                     let success = "Category is updates successfully"
@@ -162,8 +162,7 @@ mobiscroll.settings = {
 
 handleDelete(e){
     e.preventDefault();
-   // console.log("this.state.unitid --- " + this.state.unitid)
-
+   
     this.setState((prevState) => ({
         getAllcategories: prevState.getAllcategories.filter((_, i) => i !== this.state.delIndex)
     }));
@@ -172,7 +171,6 @@ handleDelete(e){
         
     }
 
-    console.log(changeStatus);
     base_url.post('admin/delete-category' ,changeStatus, {
         method: 'post',
         headers: {
@@ -180,8 +178,7 @@ handleDelete(e){
         },
        
     }).then(res => {
-        console.log(res.data.value);
-        console.log(res.data.message);
+     
         if (res.data.value == 1) {
             //swal("Company registraion is successfull");
             //let success="Company registraion is successfull"
@@ -197,8 +194,14 @@ handleDelete(e){
 }
 
     componentDidMount() {
-        console.log("Child calling ------ ");
+       
         this.fetchUnit();
+        this.timer = setInterval(() => this.fetchUnit(), 5000);
+    }
+    
+    componentWillUnmount() {
+        clearInterval(this.timer);
+        this.timer = null;
     }
 
     render() {
@@ -209,6 +212,67 @@ handleDelete(e){
 
         const tableHeadStyle= { fontWeight: 'bold' , fontSize: '15px' , color: 'black' }
         const tableBodyStyle= { fontSize: '12px' }
+
+        const columns = [
+            {
+                name: "Category",
+                options: {
+                //filter: true,
+                }
+            },
+
+            {
+                name: "Color Code",
+                options: {
+                //filter: true,
+                }
+            },
+            {
+                name: "Edit",
+                options: {
+                 // filter: true,
+                  sort: false,
+                  empty: false,
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                      <button onClick={() => this.handleClick(value,tableMeta,tableMeta.rowIndex)}>
+                        Edit
+                      </button>
+                    );
+                  }
+                }
+              },
+              {
+                name: "Delete",
+                options: {
+                  filter: true,
+                  sort: false,
+                 // empty: true,
+                  customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                      <button onClick={() => this.handleClickDelete(value,tableMeta.rowIndex)}>
+                        Delete
+                      </button>
+                    );
+                  }
+                }
+              },
+        ]
+        //"Sub Category", "Parent Sub Category", "Edit", "Delete"];
+
+
+
+       const options = {
+        selectableRows: false,
+        textLabels: {
+            body: {
+              noMatch: "Please Wait until data is loading",
+              toolTip: "Sort",
+              columnHeaderTooltip: column => `Sort for ${column.label}`
+            },
+        }
+        //filterType: 'checkbox',
+      };
 
         return (
             <div>
@@ -270,7 +334,7 @@ handleDelete(e){
                     </DialogActions>
                 </Dialog>
 
-                <Table>
+                {/* <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell style={ tableHeadStyle }>Category</TableCell>
@@ -292,7 +356,21 @@ handleDelete(e){
                             </TableRow>
 
                         )}
-                    </TableBody></Table>
+                    </TableBody></Table> */}
+
+                    <MUIDataTable
+                    title={"Category"}
+                    data={this.state.getAllcategories.map(item =>{
+                         return[
+                            item.category,
+                            item.color_code,
+                            item.id,
+                            item.id
+                         ]
+                    })}
+                    columns={columns}
+                    options={options}
+                    />
             </div>
         )
     }

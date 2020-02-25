@@ -383,7 +383,7 @@ export default function AdminLayout() {
               <AccountCircle />
             </IconButton> */}
             <Grid container justify="center" alignItems="center">
-              <Avatar alt="Remy Sharp" src={urlimg} onClick={handleProfileMenuOpen} />
+              {/* <Avatar alt="Remy Sharp" src={urlimg} onClick={handleProfileMenuOpen} /> */}
             </Grid>
           </div>
           <div className={classes.sectionMobile}>

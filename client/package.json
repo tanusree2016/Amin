@@ -17,9 +17,12 @@
     "js-file-download": "^0.4.8",
     "jwt-decode": "^2.2.0",
     "material-ui-notifications": "^0.1.4",
+    "material-ui-pagination": "^1.1.6",
     "material-ui-pickers": "^2.2.4",
     "material-ui-treeview": "^3.4.0",
+    "materialui-pagination": "0.0.6",
     "moment": "^2.24.0",
+    "mui-datatables": "^2.14.0",
     "muicss": "^0.9.43",
     "react": "^16.9.0",
     "react-alert": "^6.0.0",
@@ -35,12 +38,12 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",
     "react-select": "^3.0.8",
+    "react-tap-event-plugin": "^3.0.3",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "sweetalert": "^2.1.2"
   },
- 
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
