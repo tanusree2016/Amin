@@ -20,6 +20,21 @@ module.exports = db.sequelize.define(
         password: {
             type: Sequelize.STRING,
         },
+        social_image: {
+            type: Sequelize.STRING,
+        },
+        social_id: {
+            type: Sequelize.STRING,
+        },
+        address: {
+            type: Sequelize.STRING,
+        },
+        landmark: {
+            type: Sequelize.STRING,
+        },
+        is_deleted: {
+            type: Sequelize.INTEGER,
+        },
         createdAt: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW,

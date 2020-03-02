@@ -74,6 +74,11 @@ module.exports = db.sequelize.define(
         otp: {
             type: Sequelize.STRING,
         },
+
+        online_offline: {
+
+            type: Sequelize.INTEGER
+        },
         createdAt: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW,

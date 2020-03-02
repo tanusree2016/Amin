@@ -63,7 +63,7 @@ router.post('/register', function (req, res) {
               subject: 'OTP', // Subject line
               html: 'Hello from beeping.me .Your OTP is:' + otp
             };
-  
+
             transporter.sendMail(mailOptions, function (err, info) {
               if (err) {
                 console.log(err);
@@ -83,16 +83,16 @@ router.post('/register', function (req, res) {
             const to = req.body.phone;
             const text = 'Hello from beeping.me.Your OTP is:' + otp;
 
-              nexmo.message.sendSms(from, to, text, (err, responseData) => {
-                if (err) {
-                    console.log(err);
+            nexmo.message.sendSms(from, to, text, (err, responseData) => {
+              if (err) {
+                console.log(err);
+              } else {
+                if (responseData.messages[0]['status'] === "0") {
+                  console.log("Message sent successfully.");
                 } else {
-                    if(responseData.messages[0]['status'] === "0") {
-                        console.log("Message sent successfully.");
-                    } else {
-                        console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                    }
+                  console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
                 }
+              }
             })
 
             if (!providers) {
@@ -189,33 +189,33 @@ router.post('/sub-categories-child', function (req, res) {
 
 router.post('/full-registration', function (req, res) {
 
- //console.log(JSON.stringify(req.body));
-  
+  //console.log(JSON.stringify(req.body));
+
   var file = req.body.file.split(',')[1];
   //res.json({'file':file});
-   var type = req.body.file.split(';')[0].split('/')[1];
-   if(type=='jpeg'){
-     type= 'jpg';
-   }
-//   console.log('type'+type);
-//  console.log('fffff'+file);
+  var type = req.body.file.split(';')[0].split('/')[1];
+  if (type == 'jpeg') {
+    type = 'jpg';
+  }
+  //   console.log('type'+type);
+  //  console.log('fffff'+file);
 
   let filename = '';
-    if (req.body.file) {
-      var base64Data = file;
-      filename = 'doc'+ randomize('A', 3) + req.body.name + '.' + type;
-      fs.writeFile("./uploads/docs/" + filename, base64Data, 'base64', function (err) {
-        if (err) console.log(err);
+  if (req.body.file) {
+    var base64Data = file;
+    filename = 'doc' + randomize('A', 3) + req.body.name + '.' + type;
+    fs.writeFile("./uploads/docs/" + filename, base64Data, 'base64', function (err) {
+      if (err) console.log(err);
 
-      });
+    });
 
-    }
-    else {
-      filename = '';
-    }
+  }
+  else {
+    filename = '';
+  }
 
 
-     //console.log('---files'+filename)
+  //console.log('---files'+filename)
   const values = {
     name: req.body.name,
     city: req.body.city,
@@ -287,29 +287,29 @@ router.post('/accept-provider', function (req, res) {
 
           Provider.findByPk(req.body.providerid).then((appoint) => {
 
-          const mailOptions = {
-            from: 'tansree81@gmail.com', // sender address
-            to: appoint.email,
-            cc: 'tanusreekolkata2013@gmail.com', // cc
-            subject: 'Account accepted successfully!!', // Subject line
-            html: 'Your account accepted successfully. Please login with you registered email and default password given for further enjoyment!!. You default pasword: ' + password, // plain text body
-          };
+            const mailOptions = {
+              from: 'tansree81@gmail.com', // sender address
+              to: appoint.email,
+              cc: 'tanusreekolkata2013@gmail.com', // cc
+              subject: 'Account accepted successfully!!', // Subject line
+              html: 'Your account accepted successfully. Please login with you registered email and default password given for further enjoyment!!. You default pasword: ' + password, // plain text body
+            };
 
-          transporter.sendMail(mailOptions, function (err, info) {
-            if (err) {
-              console.log(err);
-              //res.json('Some Error occured');
-            } else {
-              console.log(info);
-              //res.json('Check your Mail');
-            }
-          })
-          res.status(200).send({
-            value: 1,
-            message: "successfull",
+            transporter.sendMail(mailOptions, function (err, info) {
+              if (err) {
+                console.log(err);
+                //res.json('Some Error occured');
+              } else {
+                console.log(info);
+                //res.json('Check your Mail');
+              }
+            })
+            res.status(200).send({
+              value: 1,
+              message: "successfull",
 
+            });
           });
-        });
         }
 
       });
@@ -318,7 +318,7 @@ router.post('/accept-provider', function (req, res) {
 });
 
 
-router.post('/reject-provider', function(req,res){
+router.post('/reject-provider', function (req, res) {
   const values = {
     is_verified: 'rejected',
   };
@@ -334,7 +334,7 @@ router.post('/reject-provider', function(req,res){
         message: "Some error occured"
       });
     }
-    else{
+    else {
       res.status(200).send({
         value: 1,
         message: "successfull",
@@ -355,27 +355,27 @@ router.post('/is_exits', function (req, res) {
   else {
     Provider.findOne({ where: { email: req.body.email } }).then(function (providers) {
       Consumer.findOne({ where: { email: req.body.email } }).then(function (consume) {
-      
-      if (!providers && !consume) {
-        return res.status(200).send({
-          value: 1,
-          message: 'success'
-        });
-      }
-      else{
-        return res.status(400).send({
-          value: 0,
-          message: 'Email id already exits'
-        });
-      }
 
+        if (!providers && !consume) {
+          return res.status(200).send({
+            value: 1,
+            message: 'success'
+          });
+        }
+        else {
+          return res.status(200).send({
+            value: 0,
+            message: 'Email id already exits'
+          });
+        }
+
+      })
     })
-  })
   }
 })
 
 router.post('/login', function (req, res) {
-  console.log('--'+req.body.email);
+  console.log('--' + req.body.email);
   if (!req.body.email) {
     return res.status(400).send({
       value: 0,
@@ -384,7 +384,7 @@ router.post('/login', function (req, res) {
   }
   else {
     Provider.findOne({ where: { email: req.body.email } }).then(function (providers) {
-      console.log('providers'+JSON.stringify(providers))
+      console.log('providers' + JSON.stringify(providers))
       if (!providers) {
         return res.status(400).send({
           value: 2,
@@ -457,7 +457,7 @@ router.post('/provider-list', function (req, res) {
 
 
 router.get('/accepted-provider-list', function (req, res) {
-  Provider.findAll({where: {is_verified:'verified'}}).then(list => {
+  Provider.findAll({ where: { is_verified: 'verified' } }).then(list => {
     if (!list) {
       res.status(400).send({
         value: 0,
@@ -474,15 +474,15 @@ router.get('/accepted-provider-list', function (req, res) {
   })
 });
 
-router.post('/service-provider-by-category', function(req,res){
-  Provider.findAll({where: {final_category: req.body.childcategory, online_offline: 1}}).then(list => {
-    if(!list){
+router.post('/service-provider-by-category', function (req, res) {
+  Provider.findAll({ where: { final_category: req.body.childcategory, online_offline: 1 } }).then(list => {
+    if (!list) {
       res.status(400).send({
         value: 0,
         message: "Some error occured"
       });
     }
-    else{
+    else {
       res.status(200).send({
         value: 1,
         message: "successfull",
@@ -492,21 +492,52 @@ router.post('/service-provider-by-category', function(req,res){
   });
 });
 
-router.post('/search', function(req,res){
+router.post('/search', function (req, res) {
   const Op = Sequelize.Op;
-  SubCategoriesChild.findAll({ where: { name: { [Op.like]: '%'+req.body.searchString+'%' } } }).then(subcatchild=> {
+  SubCategoriesChild.findAll({ where: { name: { [Op.like]: '%' + req.body.searchString + '%' } } }).then(subcatchild => {
 
-    console.log('---'+subcatchild);
-    if(!subcatchild){
+    console.log('---' + subcatchild);
+    if (!subcatchild) {
       res.json({
-        value:0,
-        message:"not found"
+        value: 0,
+        message: "not found"
       })
     }
-    else{
-      res.json({value:1, message:"successfull", result:subcatchild});
+    else {
+      res.json({ value: 1, message: "successfull", result: subcatchild });
     }
   })
+});
+
+
+router.post('/on-off', function (req, res) {
+
+  console.log('helo00000000000');
+  const values = {
+    online_offline: req.body.on_off
+  }
+  const selector = {
+    where: { id: req.body.id },
+  };
+
+  Provider.update(values, selector).then(providers => {
+
+    Provider.findByPk(req.body.id).then(details => {
+
+      console.log('---' + providers);
+
+      if (!providers) {
+        res.json({
+          value: 0,
+          message: "not found"
+        })
+      }
+      else {
+        res.json({ value: 1, message: "successfull", status: details.online_offline });
+
+      }
+    });
+  });
 })
 
 module.exports = router;

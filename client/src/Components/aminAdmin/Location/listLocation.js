@@ -130,7 +130,6 @@ class ListLocation extends Component {
             }
         }
 
-        console.log('name---'+nam);
         this.fetchState(val);
     }
 

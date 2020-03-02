@@ -26,6 +26,68 @@ let transporter = nodemailer.createTransport({
     }
 });
 
+
+router.post('/social-login', function (req, res) {
+
+    // console.log('--' + req.body);
+    console.log('----' + JSON.stringify(req.body));
+    if (!req.body.userId) {
+        return res.status(400).send({
+            value: 0,
+            message: "Social id can not be empty"
+        });
+    }
+    else {
+
+        const Customer = new Consumer({
+            name: req.body.name,
+            email: req.body.email,
+            social_image: req.body.avatar,
+            social_id: req.body.userId
+        });
+        Customer.save().then(function (consumers) {
+
+            const mailOptions = {
+                from: 'tansree81@gmail.com', // sender address
+                to: req.body.email,
+                cc: 'tanusreekolkata2013@gmail.com', // cc
+                subject: 'Registration Successfull', // Subject line
+                html: 'Welcome to beeping.me. You are successfully registered.', // plain text body
+            };
+
+            transporter.sendMail(mailOptions, function (err, info) {
+                if (err) {
+                    console.log(err);
+                    //res.json('Some Error occured');
+                } else {
+                    console.log(info);
+                    //res.json('Check your Mail');
+                }
+            })
+            if (!consumers) {
+                return res.status(400).send({
+                    value: 0,
+                    message: 'Not saved error'
+                });
+            }
+            else {
+                return res.status(200).send({
+                    value: 1,
+                    message: 'Succefully registered',
+                    data: consumers
+                });
+            }
+        }).catch(function (err) {
+
+            return res.status(400).send({
+                value: 0,
+                message: 'Not saved error',
+                data: err,
+            });
+        })
+    }
+})
+
 router.post('/register', function (req, res) {
     if (!req.body.email) {
         return res.status(400).send({
@@ -242,9 +304,9 @@ router.post('/service-provider', function (req, res) {
                     else {
 
                         res.json({
-                            Providers:service_provider,
+                            Providers: service_provider,
                             value: 1,
-                            message:'success'
+                            message: 'success'
                         });
                     }
                 })
@@ -325,6 +387,121 @@ router.post('/forget-password', function (req, res) {
         });
     }
 });
+
+router.post('/my-account', function (req, res) {
+    Consumer.findByPk(req.body.consumerid).then(consumer => {
+
+        var name = req.body.name != "" ? req.body.name : consumer.name;
+        var address = req.body.address != "" ? req.body.address : consumer.address;
+        var landmark = req.body.address != "" ? req.body.address : consumer.address;
+        console.log('password----' + req.body.password);
+        console.log('hi');
+        if (typeof req.body.password !== 'undefined' && req.body.password != "") {
+
+            console.log('hello');
+            bcrypt.genSalt(10, (err, salt) => {
+                if (err) console.error('There was an error', err);
+                else {
+                    bcrypt.hash(req.body.password, salt, (err, hash) => {
+                        const values = {
+                            name: name,
+                            address: address,
+                            landmark: landmark,
+                            password: hash,
+                        };
+                        const selector = {
+                            where: { id: req.body.consumerid },
+                        };
+                        Consumer.update(values, selector).then(customer => {
+                            if (!customer) {
+                                return res.status(400).send({
+                                    value: 0,
+                                    message: 'Not saved error'
+                                });
+                            }
+                            else {
+
+                                return res.status(200).send({
+                                    value: 1,
+                                    message: 'Updated'
+                                });
+                            }
+                        })
+                    })
+
+                }
+            })
+
+
+        }
+
+        else {
+            const values = {
+                name: name,
+                address: address,
+                landmark: landmark,
+
+            };
+            const selector = {
+                where: { id: req.body.consumerid },
+            };
+            Consumer.update(values, selector).then(customer => {
+                if (!customer) {
+                    return res.status(400).send({
+                        value: 0,
+                        message: 'Not saved error'
+                    });
+                }
+                else {
+
+                    return res.status(200).send({
+                        value: 1,
+                        message: 'Updated'
+                    });
+                }
+            })
+
+
+
+        }
+
+    })
+
+
+
+    // if (typeof req.body.password !== 'undefined') {
+    //     bcrypt.genSalt(10, (err, salt) => {
+    //         if (err) console.error('There was an error', err);
+    //         else {
+    //             bcrypt.hash(req.body.password, salt, (err, hash) => {
+    //                 const values = {
+    //                     password: hash,
+    //                 };
+
+    //                 const selector = {
+    //                     where: { id: req.body.id },
+    //                 };
+
+    //             })
+    //         }
+    //     })
+    // }
+    // else {
+    //     const values = {
+    //         password: hash,
+    //     };
+
+    //     const selector = {
+    //         where: { email: req.body.email },
+    //     };
+
+
+    // }
+
+
+})
+
+
 
 
 

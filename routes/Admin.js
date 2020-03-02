@@ -397,6 +397,71 @@ router.post('/state-list/:country_id', function(req,res){
 });
 
 
+router.post('/masters-state-list/:country_id', function(req,res){
+
+    console.log(req.body);
+    MasterLocation.belongsTo(State, { foreignKey: 'state_id' });
+    MasterLocation.findAll({
+        where: {country_id: req.params.country_id},
+        include: [
+            {
+                model: State
+            }
+        ],
+       group: ['state_id'],
+    //  distinct: true,
+       where: {country_id: req.params.country_id},
+    }
+    ).then(state=>{
+
+        var newarr = []
+        state.forEach(element => {
+            console.log('ele'+JSON.stringify(element.state.name));
+            //console.log('loc'+JSON.stringify(location.country_id[element]));
+            newarr.push({
+                name: element.state.name,
+                id: element.state.id
+            }
+            )
+
+            //console.log(newarr);
+        });
+
+        if(!state){
+            return res.status(400).send({
+                value:0,
+                message: 'Error'
+            });
+        }
+        else{
+          return res.status(200).send({
+                value: 1,
+                message: 'success',
+                data: newarr
+            })
+        }
+    })
+
+
+
+    // State.findAll({where:{country_id:req.params.country_id}}).then(country=>{
+    //     if(!country){
+    //         return res.status(400).send({
+    //             value:0,
+    //             message: 'Error'
+    //         });
+    //     }
+    //     else{
+    //         return res.status(200).send({
+    //             value: 1,
+    //             message: 'success',
+    //             data: country
+    //         })
+    //     }
+    // })
+});
+
+
 router.post('/master-country-list', function(req,res){
 
     // const country =  db.sequelize.query('SELECT name FROM countries INNER JOIN master_locations ON countries.id=master_locations.country_id GROUP BY name');
@@ -453,6 +518,8 @@ router.post('/master-country-list', function(req,res){
 
 
 router.post('/master-state-list', function(req,res){
+
+    console.log(req.body);
     MasterLocation.belongsTo(State, { foreignKey: 'state_id' });
     MasterLocation.findAll({
         where: {country_id: req.body.country_id},
@@ -592,6 +659,227 @@ router.post('/edit-location' , function(req,res){
       });
 })
 
+
+
+router.post('/add-consumer', function(req,res){
+    
+    if (!req.body.email) {
+        return res.status(400).send({
+            value: 0,
+            message: "Email can not be empty"
+        });
+    }
+    else {
+        bcrypt.genSalt(10, (err, salt) => {
+            if (err) console.error('There was an error', err);
+            else {
+                bcrypt.hash(req.body.password, salt, (err, hash) => {
+
+                    const Customer = new Consumer({
+                        name: req.body.name,
+                        email: req.body.email,
+                        phone: req.body.phone,
+                        password: hash,
+                        address: req.body.address,
+                        landmark: req.body.landmark
+                    });
+
+                    Customer.save().then(function (consumers) {
+
+                        //console.log('==='+consumers);
+
+                        // const mailOptions = {
+                        //     from: 'tansree81@gmail.com', // sender address
+                        //     to: req.body.email,
+                        //     cc: 'tanusreekolkata2013@gmail.com', // cc
+                        //     subject: 'Registration Successfull', // Subject line
+                        //     html: 'Welcome to beeping.me. You are successfully registered.', // plain text body
+                        // };
+
+                        // transporter.sendMail(mailOptions, function (err, info) {
+                        //     if (err) {
+                        //         console.log(err);
+                        //         //res.json('Some Error occured');
+                        //     } else {
+                        //         console.log(info);
+                        //         //res.json('Check your Mail');
+                        //     }
+                        // })
+                        if (!consumers) {
+                            return res.status(400).send({
+                                value: 0,
+                                message: 'Not saved error 1'
+                            });
+                        }
+                        else {
+                            return res.status(200).send({
+                                value: 1,
+                                message: 'Succefully registered',
+                                data: consumers
+                            });
+                        }
+                    }).catch(function (err) {
+
+                        return res.status(400).send({
+                            value: 0,
+                            message: 'Not saved error',
+                            data: err,
+                        });
+                    })
+
+
+                })
+            }
+        })
+
+
+    }
+});
+
+
+router.post('/list-consumer', function(req,res){
+    Consumer.findAll({ where:{is_deleted:0}}).then(consumers=>{
+        if(!consumers){
+            res.json({value:0, message:'No data found' })
+        }
+        else{
+            res.json({value: 1, message:'Success', data: consumers});
+        }
+    })
+});
+
+router.post('/edit-consumer', function(req,res){
+ console.log(req.body);
+let values = {};
+ if(req.body.password!= ''){
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) console.error('There was an error', err);
+        else {
+            bcrypt.hash(req.body.password, salt, (err, hash) => {
+                 values = {
+                    name: req.body.name,
+                    email: req.body.email,
+                    phone: req.body.phone,
+                    password: hash,
+                    address: req.body.address,
+                    landmark: req.body.landmark,
+                  }
+            })
+        }
+    })
+ }
+
+ else{
+
+  values = {
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+   // password: req.body.password,
+    address: req.body.address,
+    landmark: req.body.landmark,
+  }
+}
+  const selector = {
+    where: { id: req.body.consumerid },
+  };
+
+  Consumer.update(values, selector).then(update => {
+    if(!update){
+        res.json({value:0, message:'not updated'})
+    }
+    else{
+        res.json({value:1, message:"updated"})
+    }
+  });
+
+});
+
+router.post('/delete-consumer', function(req,res){
+
+    console.log('--'+JSON.stringify(req.body))
+    const values= {
+        is_deleted: 1
+    }
+    const selector = {
+        where: { id: req.body.consumerid },
+      };
+
+      Consumer.update(values, selector).then(update => {
+        if(!update){
+            res.json({value:0, message:'not deleted'})
+        }
+        else{
+            res.json({value:1, message:"Deleted"})
+        }
+      });
+
+});
+
+
+router.post('/masters-subcategory/:category_id', function(req,res){
+
+    SubCategories.findAll({ where: { category_id: req.params.category_id } }).then(subcat => {
+        if (!subcat) {
+          res.status(400).send({
+            value: 0,
+            message: "Some error occured"
+          });
+        }
+        else {
+          res.status(200).send({
+            value: 1,
+            message: "successfull",
+            subcategories: subcat
+          })
+        }
+      });
+});
+
+
+router.post('/masters-childsubcategory/:sub_category_id', function(req,res){
+    SubCategoryChild.findAll({ where: { subcategoryid: req.params.sub_category_id } }).then(subcat => {
+        if (!subcat) {
+          res.status(400).send({
+            value: 0,
+            message: "Some error occured"
+          });
+        }
+        else {
+          res.status(200).send({
+            value: 1,
+            message: "successfull",
+            childsubcategories: subcat
+          })
+        }
+      });
+});
+
+
+router.post('/masters-city-list/:state_id/:country_id', function(req,res){
+
+    console.log('country'+JSON.stringify(req.params.country));
+    console.log('state'+req.params.state_id)
+    MasterLocation.findAll({
+        where: {country_id: req.params.country_id, state_id : req.params.state_id},
+     }
+     ).then(city=>{
+         
+         if(!city){
+             return res.status(400).send({
+                 value:0,
+                 message: 'Error'
+             });
+         }
+         else{
+           return res.status(200).send({
+                 value: 1,
+                 message: 'success',
+                 data: city
+             })
+         }
+     })
+})
 
 
 

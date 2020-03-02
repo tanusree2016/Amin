@@ -72,10 +72,11 @@ import HomeAdmin from '../../Components/admin/HomeAdmin';
 import DefaultPage from '../../Components/admin/DefaultPage';
 import AddCategory from '../../Components/aminAdmin/category/addCategories';
 import SubCategory from '../../Components/aminAdmin/subcategory/addSubcategory';
-import Providers from '../../Components/aminAdmin/provider/providerlist';
+import Providers from '../../Components/aminAdmin/provider/addProvider';
 import ServiceProvider from '../../Components/aminAdmin/provider/serviceproviderlist';
 import ChildSubCategory from '../../Components/aminAdmin/finalcategory/addfinalcategories';
 import AddLocation from '../../Components/aminAdmin/Location/addLocation';
+import AddConsumer from '../../Components/aminAdmin/consumer/addConsumer';
 
 
 const drawerWidth = 240;
@@ -213,18 +214,20 @@ export default function AdminLayout() {
     setSelectedIndex(index);
     if (index == 0)
       setComponent("dashboard");
-    if(index==1)
-     setComponent("category")
-    if(index==2)
-     setComponent("subCategory")
-    if(index==3)
-    setComponent("providers")
-    if(index==4)
-    setComponent("serviceproviders")
-    if(index==5)
-    setComponent("childsubcategory")
-    if(index==6)
-    setComponent("addlocation");
+    if (index == 1)
+      setComponent("category")
+    if (index == 2)
+      setComponent("subCategory")
+    if (index == 3)
+      setComponent("providers")
+    if (index == 4)
+      setComponent("serviceproviders")
+    if (index == 5)
+      setComponent("childsubcategory")
+    if (index == 6)
+      setComponent("addlocation");
+    if (index == 7)
+      setComponent("addconsumer");
     // if (index == 1)
     //   setOpen(!open);
     // if (index == 1.1)
@@ -249,7 +252,7 @@ export default function AdminLayout() {
     //   setComponent("units")
   }
 
-  
+
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -352,7 +355,7 @@ export default function AdminLayout() {
     <div className={classes.grow}>
       <AppBar position="fixed" className={classes.appBar}>
         <CssBaseline />
-        
+
         <Toolbar variant="dense">
           {/* <img src={Image} alt="logo" />
           &nbsp;&nbsp;
@@ -383,7 +386,7 @@ export default function AdminLayout() {
               <AccountCircle />
             </IconButton> */}
             <Grid container justify="center" alignItems="center">
-              {/* <Avatar alt="Remy Sharp" src={urlimg} onClick={handleProfileMenuOpen} /> */}
+              <Avatar alt="Remy Sharp" src={urlimg} onClick={handleProfileMenuOpen} />
             </Grid>
           </div>
           <div className={classes.sectionMobile}>
@@ -400,7 +403,7 @@ export default function AdminLayout() {
         </Toolbar>
         <div>
           <Typography align="right" className={classes.titleUser} variant="h9">
-            Welcome {localStorage.getItem("name")}   
+            Welcome {localStorage.getItem("name")}
           </Typography>
         </div>
       </AppBar>
@@ -412,53 +415,59 @@ export default function AdminLayout() {
         }} >
         <div className={classes.toolbar} />
 
-        
-            <div>
-              <List>
-                <ListItem button selected={selectedIndex === 0} onClick={event => handleListItemClick(event, 0)}>
-                  <ListItemIcon><DashboardIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Dashboard" style={{ color: '#FFFFFF' }} />
-                </ListItem>
-              </List>
-              <List>
-                <ListItem button selected={selectedIndex === 1} onClick={event => handleListItemClick(event, 1)}>
-                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Category" style={{ color: '#FFFFFF' }} />
-                </ListItem>
-              </List>
-              <List>
-                <ListItem button selected={selectedIndex === 2} onClick={event => handleListItemClick(event, 2)}>
-                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Sub Category" style={{ color: '#FFFFFF' }} />
-                </ListItem>
-              </List>
-              <List>
-                <ListItem button selected={selectedIndex === 5} onClick={event => handleListItemClick(event, 5)}>
-                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Child Sub Category" style={{ color: '#FFFFFF' }} />
-                </ListItem>
-              </List>
-             <List>
-                <ListItem button selected={selectedIndex === 3} onClick={event => handleListItemClick(event, 3)}>
-                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Service Providers" style={{ color: '#FFFFFF' }} />
-                </ListItem>
-              </List>
-              {/* <List>
+
+        <div>
+          <List>
+            <ListItem button selected={selectedIndex === 0} onClick={event => handleListItemClick(event, 0)}>
+              <ListItemIcon><DashboardIcon className={classes.icon} /> </ListItemIcon>
+              <ListItemText primary="Dashboard" style={{ color: '#FFFFFF' }} />
+            </ListItem>
+          </List>
+          <List>
+            <ListItem button selected={selectedIndex === 1} onClick={event => handleListItemClick(event, 1)}>
+              <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+              <ListItemText primary="Category" style={{ color: '#FFFFFF' }} />
+            </ListItem>
+          </List>
+          <List>
+            <ListItem button selected={selectedIndex === 2} onClick={event => handleListItemClick(event, 2)}>
+              <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+              <ListItemText primary="Sub Category" style={{ color: '#FFFFFF' }} />
+            </ListItem>
+          </List>
+          <List>
+            <ListItem button selected={selectedIndex === 5} onClick={event => handleListItemClick(event, 5)}>
+              <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+              <ListItemText primary="Child Sub Category" style={{ color: '#FFFFFF' }} />
+            </ListItem>
+          </List>
+          <List>
+            <ListItem button selected={selectedIndex === 7} onClick={event => handleListItemClick(event, 7)}>
+              <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+              <ListItemText primary="Consumer" style={{ color: '#FFFFFF' }} />
+            </ListItem>
+          </List>
+          <List>
+            <ListItem button selected={selectedIndex === 3} onClick={event => handleListItemClick(event, 3)}>
+              <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+              <ListItemText primary="Service Providers" style={{ color: '#FFFFFF' }} />
+            </ListItem>
+          </List>
+          {/* <List>
                 <ListItem button selected={selectedIndex === 4} onClick={event => handleListItemClick(event, 4)}>
                   <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
                   <ListItemText primary="Service Providers" style={{ color: '#FFFFFF' }} />
                 </ListItem>
               </List> */}
-              <List>
-                <ListItem button selected={selectedIndex === 6} onClick={event => handleListItemClick(event, 6)}>
-                  <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
-                  <ListItemText primary="Add Location" style={{ color: '#FFFFFF' }} />
-                </ListItem>
-              </List>
-      
-            </div>
-      
+          <List>
+            <ListItem button selected={selectedIndex === 6} onClick={event => handleListItemClick(event, 6)}>
+              <ListItemIcon><CRMIcon className={classes.icon} /> </ListItemIcon>
+              <ListItemText primary="Add Location" style={{ color: '#FFFFFF' }} />
+            </ListItem>
+          </List>
+
+        </div>
+
 
       </Drawer>
 
@@ -648,7 +657,7 @@ export default function AdminLayout() {
             :
             ''
         }
-         {
+        {
           component === 'subCategory' ?
 
             <SubCategory />
@@ -657,29 +666,36 @@ export default function AdminLayout() {
         }
         {
           component === 'providers' ?
-          <Providers />
-          :
-          ''
+            <Providers />
+            :
+            ''
         }
         {
           component === 'serviceproviders' ?
-          <ServiceProvider />
-          :
-          ''
+            <ServiceProvider />
+            :
+            ''
         }
         {
           component === 'childsubcategory' ?
-          <ChildSubCategory />
-          :
-          ''
+            <ChildSubCategory />
+            :
+            ''
         }
         {
           component === 'addlocation' ?
-          <AddLocation />
-          :
-          ''
+            <AddLocation />
+            :
+            ''
         }
-        
+
+        {
+          component === 'addconsumer' ?
+            <AddConsumer />
+            :
+            ''
+        }
+
       </main>
       {renderMobileMenu}
       {renderMenu}
