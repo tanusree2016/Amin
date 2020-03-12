@@ -74,6 +74,7 @@ import AddCategory from '../../Components/aminAdmin/category/addCategories';
 import SubCategory from '../../Components/aminAdmin/subcategory/addSubcategory';
 import Providers from '../../Components/aminAdmin/provider/addProvider';
 import ServiceProvider from '../../Components/aminAdmin/provider/serviceproviderlist';
+import TestProvider from '../../Components/aminAdmin/provider/providerlist'
 import ChildSubCategory from '../../Components/aminAdmin/finalcategory/addfinalcategories';
 import AddLocation from '../../Components/aminAdmin/Location/addLocation';
 import AddConsumer from '../../Components/aminAdmin/consumer/addConsumer';

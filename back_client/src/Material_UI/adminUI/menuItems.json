@@ -1,0 +1,40 @@
+{
+  "value": 1,
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkOTViY2IwMmQyN2ZjMGQxNDhhMjlkZCIsImlhdCI6MTU3MDYwMTI2OSwiZXhwIjoxNTcwNjA0ODY5fQ.dHb24Z0yzhdlxvdkEvuJ4D-f3HJDaE9aQONFAlxmim4",
+  "email": "user@gmail.com",
+  "password": "$2a$10$MvvS1Y2OmPzDpJfEiv51QecIcKLxe/LoO5vRjBb0izqGbU5SQ6/Z.",
+  "subscription": "",
+  "db": "eclipsia_48",
+  "companyid": "48",
+  "menu": [
+      {
+          "label": "Inventory",
+          "value": "20",
+          "menuid": "20",
+          "children": [
+              {
+                  "label": "view",
+                  "value": "inv_1",
+                  "subid": "1"
+              },
+              {
+                  "label": "manage",
+                  "value": "inv_2",
+                  "subid": "2"
+              }
+          ]
+      },
+      {
+          "label": "Purchase",
+          "value": "21",
+          "menuid": "21",
+          "children": [
+              {
+                  "label": "view",
+                  "value": "pur_1",
+                  "subid": "1"
+              }
+          ]
+      }
+  ]
+}

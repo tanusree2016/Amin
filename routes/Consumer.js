@@ -11,6 +11,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const jwt_config = require('../jwt.config');
 const nodemailer = require('nodemailer');
+const Timeslot = require('../model/TimeSlot');
+const Booking = require('../model/Booking');
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
@@ -242,11 +244,12 @@ router.post('/service-provider-by-id', function (req, res) {
     //  Project.belongsTo(Client, {foreignKey: 'client_id'});
 
     Provider.findAll({
-
+        // where: { service_id: req.body.service_id }
         include: [
             {
                 model: Skills,
                 where: { service_id: req.body.service_id }
+
             }
         ]
     }).then(providers => {
@@ -272,16 +275,18 @@ router.post('/service-provider', function (req, res) {
     Provider.hasMany(Feedback, { sourceKey: 'id', foreignKey: 'service_provider_id' });
 
     Provider.findByPk(req.body.service_provider_id, {
-        include: [
-            {
-                model: Skills,
-                where: { service_provider_id: req.body.service_provider_id }
-            },
-            {
-                model: Feedback,
-                where: { service_provider_id: req.body.service_provider_id }
-            }
-        ]
+
+        where: { service_provider_id: req.body.service_provider_id }
+        // include: [
+        //     {
+        //         model: Skills,
+        //         where: { service_provider_id: req.body.service_provider_id }
+        //     },
+        //     {
+        //         model: Feedback,
+        //         where: { service_provider_id: req.body.service_provider_id }
+        //     }
+        // ]
     }).then(service_provider => {
         //console.log('dd'+JSON.stringify(service_provider));
         // console.log(service_provider.sub_category);
@@ -465,7 +470,10 @@ router.post('/my-account', function (req, res) {
 
         }
 
-    })
+    });
+
+
+
 
 
 
@@ -503,7 +511,175 @@ router.post('/my-account', function (req, res) {
 
 
 
+router.post('/time-slot', function (req, res) {
+    Timeslot.findAll().then(time => {
+        if (!time) {
+            res.json({ value: 0, message: "Not found" });
+        }
+        else {
 
+            res.json({ value: 1, message: "Success", Time: time });
+        }
+    })
+});
+
+
+
+router.post('/booking', function (req, res) {
+    // if(typeof req.body.timeslot_id !== 'undefined'){
+    //     var time_slot = 
+    //     var 
+    // }
+    // else{
+
+    // }
+
+
+    const booking = new Booking({
+        amount: req.body.amount,
+        payment_id: req.body.payment_id,
+        timeslot_id: req.body.timeslot_id,
+        custom_time: req.body.custom_time,
+        user_id: req.body.user_id,
+        provider_id: req.body.provider_id,
+        booking_date: req.body.booking_date,
+        address: req.body.address
+    });
+
+    booking.save().then(books => {
+        if (!books) {
+            res.json({ value: 0, message: "Not saved" });
+        }
+        else {
+            res.json({ value: 1, message: "Successfull", Bookings: books });
+        }
+    })
+});
+
+router.post('/customer-booking-history', function (req, res) {
+
+   
+    Booking.belongsTo(Timeslot, { foreignKey: 'timeslot_id' });
+    Booking.belongsTo(Provider, { foreignKey: 'provider_id' });
+    Provider.belongsTo(Service, { foreignKey: 'service' });
+    //  Provider.belongsTo(SubCategoriesChild, { foreignKey: 'sub_category' });
+    Provider.belongsTo(SubCategories, { foreignKey: 'sub_category' });
+    Booking.findAll({
+        include: [
+            {
+                model: Timeslot
+            },
+
+            {
+                model: Provider,
+                include: [{ model: Service }, { model: SubCategories }]
+            }
+        ],
+
+        where: { user_id: req.body.user_id }
+    }).then(booking => {
+       // console.log("====="+booking);
+        var newarr = [];
+        booking.forEach(element => {
+            newarr.push({
+                id: element.id,
+                amount: element.amount,
+                status: element.status,
+                address: element.address,
+                payment_id: element.status,
+                timeslot_id: element.timeslot_id,
+                custom_time: element.custom_time,
+                user_id: element.user_id,
+                booking_date: element.booking_date,
+                provider_id: element.provider_id,
+                createdAt: element.createdAt,
+                updatedAt: element.updatedAt,
+                provider_name: element.amin_service_provider.name,
+                phone: element.amin_service_provider.phone,
+                id_proof: element.amin_service_provider.id_proof,
+                slot_from: element.amin_time_slot.slot_from,
+                slot_to: element.amin_time_slot.slot_to,
+                category: element.amin_service_provider.amin_service_category.category,
+                subcategory: element.amin_service_provider.amin_service_subcategory.subcategory,
+
+            }
+            )
+        });
+
+        if (!booking) {
+            res.json({ value: 0, message: "not found" });
+        }
+        else {
+            res.json({ value: 1, message: "success", data: newarr });
+        }
+
+    })
+
+})
+
+//         })
+//     })
+// })
+
+router.post('/customer-booking-recent', function (req, res) {
+    const now = new Date();
+    const today_date = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+    Booking.belongsTo(Timeslot, { foreignKey: 'timeslot_id' });
+    Booking.belongsTo(Provider, { foreignKey: 'provider_id' });
+    Provider.belongsTo(Service, { foreignKey: 'service' });
+    //  Provider.belongsTo(SubCategoriesChild, { foreignKey: 'sub_category' });
+    Provider.belongsTo(SubCategories, { foreignKey: 'sub_category' });
+    Booking.findAll({
+        include: [
+            {
+                model: Timeslot
+            },
+
+            {
+                model: Provider,
+                include: [{ model: Service }, { model: SubCategories }]
+            }
+        ],
+
+        where: { user_id: req.body.user_id, booking_date: today_date }
+    }).then(booking => {
+
+        var newarr = [];
+        booking.forEach(element => {
+            newarr.push({
+                id: element.id,
+                amount: element.amount,
+                status: element.status,
+                address: element.address,
+                payment_id: element.status,
+                timeslot_id: element.timeslot_id,
+                custom_time: element.custom_time,
+                user_id: element.user_id,
+                booking_date: element.booking_date,
+                provider_id: element.provider_id,
+                createdAt: element.createdAt,
+                updatedAt: element.updatedAt,
+                provider_name: element.amin_service_provider.name,
+                phone: element.amin_service_provider.phone,
+                id_proof: element.amin_service_provider.id_proof,
+                slot_from: element.amin_time_slot.slot_from,
+                slot_to: element.amin_time_slot.slot_to,
+                category: element.amin_service_provider.amin_service_category.category,
+                subcategory: element.amin_service_provider.amin_service_subcategory.subcategory,
+
+            }
+            )
+        });
+
+        if (!booking) {
+            res.json({ value: 0, message: "not found" });
+        }
+        else {
+            res.json({ value: 1, message: "success", data: newarr });
+        }
+
+    })
+})
 
 
 module.exports = router;

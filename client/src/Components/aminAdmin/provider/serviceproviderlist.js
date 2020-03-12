@@ -125,7 +125,7 @@ mobiscroll.settings = {
     fetchProviders () {
         console.log("Calling --- ");
         fetch(envirionment.BASE_URL + 'service/accepted-provider-list', {
-            method: "POST",
+            method: "GET",
             headers: { 'x-access-token': localStorage.getItem('token') }
         }).then(res => res.json())
             .then(res => {

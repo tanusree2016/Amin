@@ -13,6 +13,7 @@ import '@mobiscroll/react-lite/dist/css/mobiscroll.min.css';
 import Select from '@material-ui/core/Select';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker, } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import ProviderList from './providerlist';
 
 //import ListConsumer from './listConsumer';
 
@@ -50,6 +51,7 @@ class AddProvider extends Component {
             sub_category: '',
             subcategory:'',
             final_category: '',
+            childsubcategory: '',
             salary_hr: '',
             profile_headline:'',
             getallcountry: [],
@@ -68,7 +70,7 @@ class AddProvider extends Component {
         this.state.min_birth_date.setFullYear(this.state.birth_date.getFullYear() - 100);
         this.state.max_birth_date.setFullYear(this.state.birth_date.getFullYear() - 13);
         this.state.birth_date.setFullYear(this.state.birth_date.getFullYear() - 14);
-
+        
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleBirthDateChange = this.handleBirthDateChange.bind(this);
 
@@ -360,7 +362,7 @@ fetchCity(state_id){
             postal_code: this.state.postal_code,
             category: this.state.category,
             subcategory: this.state.subcategory,
-            childsubcategory: this.state.childsubcategories,
+            childsubcategory: this.state.childsubcategory,
             dob: this.state.birth_date,
             salary: this.state.salary,
             experience: this.state.experience
@@ -368,35 +370,52 @@ fetchCity(state_id){
         }
 
         console.log('----Provider'+JSON.stringify(providerAdd));
-        // base_url.post('admin/add-consumer', consumerAdd, {
-        //     headers: {
-        //         'x-access-token': localStorage.getItem('token'),
-        //     }
-        // }).then(res => {
+        base_url.post('admin/add-provider', providerAdd, {
+            headers: {
+                'x-access-token': localStorage.getItem('token'),
+            }
+        }).then(res => {
 
-        //     if (res.data.value == 1)
-        //         showAlert("consumer is added successfully");
-        //     else
-        //         showAlert(res.data.message);
-        //     this.reloadChild();
-        // })
-        //     .catch(e => console.log(e))
+            if (res.data.value == 1)
+                showAlert("Provider is added successfully");
+            else
+                showAlert(res.data.message);
+            this.reloadChild();
+        })
+            .catch(e => console.log(e))
 
-        // this.resetField();
+        this.resetField();
 
     }
 
     resetField = () => {
-        this.setState({ name: '' });
+        this.setState({ fullname: '' });
         this.setState({ email: '' });
         this.setState({ phone: '' });
         this.setState({ password: '' });
         this.setState({ address: '' });
-        this.setState({ landmark: '' });
+        this.setState({ country: '' });
+        this.setState({ statename: '' });
+        this.setState({ city: '' });
+        this.setState({ postal_code: '' });
+        this.setState({ category: '' });
+        this.setState({ subcategory: '' });
+        this.setState({ salary: '' });
+        this.setState({ childsubcategory: '' });
+        this.setState({ experience: '' });
+
+        this.state.birth_date = new Date();
+        this.state.min_birth_date.setFullYear(this.state.birth_date.getFullYear() - 100);
+        this.state.max_birth_date.setFullYear(this.state.birth_date.getFullYear() - 13);
+        this.state.birth_date.setFullYear(this.state.birth_date.getFullYear() - 14);
 
     }
 
-
+    checkMobile(event) {
+        if (this.state.phone.length != 10) {
+            showAlert('Please enter valid mobile number with 10 digit.');
+        }
+    }
     render() {
 
         const { open } = this.state;
@@ -421,6 +440,14 @@ fetchCity(state_id){
             marginLeft: 4,
             marginRight: 4,
             marginTop: 5,
+
+            number:{
+                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                    "-webkit-appearance": "none",
+                    margin: 0
+                  }
+            }   
+            
         };
 
         const formControl = {
@@ -428,8 +455,10 @@ fetchCity(state_id){
             marginLeft: 15,
         };
 
+        
+
         const datefieldHeight = {
-            width: 280,
+            width: 200,
             height: 50,
             marginTop: 1,
             marginLeft: 4,
@@ -481,6 +510,7 @@ fetchCity(state_id){
                                 type="number"
                                 value={this.state.phone}
                                 onChange={(ev) => this.handleInputChangeValue(ev, 1)}
+                                onBlur={(ev) => this.checkMobile(ev)}
                             />
                         </div>
 
@@ -577,6 +607,7 @@ fetchCity(state_id){
                                 id="postal_code"
                                 label="postal_code"
                                 name="postal_code"
+                                type="number"
                                 value={this.state.postal_code}
                                 onChange={(ev) => this.handleInputChangeValue(ev, 1)}
                             />
@@ -666,6 +697,7 @@ fetchCity(state_id){
                                 id="salary"
                                 label="Salary"
                                 name="salary"
+                                type="number"
                                 value={this.state.salary}
                                 onChange={(ev) => this.handleInputChangeValue(ev, 1)}
                             />
@@ -680,6 +712,7 @@ fetchCity(state_id){
                                 id="experience"
                                 label="Experience"
                                 name="experience"
+                                type="number"
                                 value={this.state.experience}
                                 onChange={(ev) => this.handleInputChangeValue(ev, 1)}
                             />
@@ -704,7 +737,9 @@ fetchCity(state_id){
                     </div>
 
                 </form>
-              
+                {this.state.showChild ?
+                    <ProviderList reloadChild={this.reloadChild} /> : null
+                }
 
             </div>
         )

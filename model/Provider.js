@@ -70,6 +70,10 @@ module.exports = db.sequelize.define(
         is_verified: {
             type: Sequelize.STRING,
         },
+
+        about: {
+            type: Sequelize.STRING,
+        },
         
         otp: {
             type: Sequelize.STRING,
@@ -77,6 +81,10 @@ module.exports = db.sequelize.define(
 
         online_offline: {
 
+            type: Sequelize.INTEGER
+        },
+
+        is_deleted: {
             type: Sequelize.INTEGER
         },
         createdAt: {
