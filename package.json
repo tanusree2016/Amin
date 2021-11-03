@@ -40,7 +40,7 @@
     "sequelize-cli": "^5.5.0",
     "store": "^2.0.12",
     "sweetalert": "^2.1.2",
-    "validator": "^11.0.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
