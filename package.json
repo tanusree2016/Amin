@@ -31,7 +31,7 @@
     "node-pushnotifications": "^1.1.10",
     "node-storage": "0.0.8",
     "nodemailer": "^6.4.2",
-    "otp-generator": "^1.1.0",
+    "otp-generator": "^3.0.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "randomatic": "^3.1.1",
